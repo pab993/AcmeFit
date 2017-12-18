@@ -1,0 +1,292 @@
+
+package services;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
+
+import repositories.CreditCardRepository;
+import repositories.CustomerRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
+import domain.Competition;
+import domain.CreditCard;
+import domain.Customer;
+import domain.Qualification;
+import domain.Trainer;
+import forms.CustomerForm;
+
+@Transactional
+@Service
+public class CustomerService {
+
+	// Managed Repository 
+	// ====================================================================================
+
+	@Autowired
+	private CreditCardRepository		creditCardRepository;
+	@Autowired
+	private CustomerRepository			customerRepository;
+
+	@Autowired
+	private ActorService				actorService;
+	@Autowired
+	private ConfigurationSystemService	configurationSystemService;
+	@Autowired
+	private CompetitionService			competitionService;
+	@Autowired
+	private QualificationService		qualificationService;
+
+
+	// Constructor methods
+	// ====================================================================================
+	public CustomerService() {
+		super();
+	}
+
+	// Simple CRUDS methods 
+	// ====================================================================================
+
+	public Customer create() {
+
+		final Customer customer = new Customer();
+
+		customer.setUserAccount(new UserAccount());
+		customer.getUserAccount().setAuthorities(new ArrayList<Authority>());
+
+		final Authority authority = new Authority();
+		authority.setAuthority("CUSTOMER");
+
+		customer.getUserAccount().getAuthorities().add(authority);
+
+		customer.setAchievedReward(0);
+		customer.setMonthlyFee(this.configurationSystemService.findTheOne().getMonthlyPayment());
+
+		return customer;
+	}
+	public Customer findOne(final int id) {
+
+		Assert.isTrue(this.customerRepository.exists(id));
+
+		return this.customerRepository.findOne(id);
+	}
+
+	public Collection<Customer> findAll() {
+
+		Collection<Customer> customers;
+
+		customers = this.customerRepository.findAll();
+		Assert.notEmpty(customers);
+
+		return customers;
+	}
+
+	public Customer save(final Customer customer) {
+		Assert.notNull(customer);
+
+		final Customer saved = this.customerRepository.save(customer);
+
+		return saved;
+	}
+
+	public void delete(final Customer customer) {
+		Assert.notNull(customer, "Customer null");
+		Assert.isTrue(this.customerRepository.exists(customer.getId()), "didn't found");
+
+		this.customerRepository.delete(customer);
+	}
+
+	// Others bussines methods
+	// ====================================================================================
+
+	public Customer findByPrincipal() {
+		Customer result;
+
+		try {
+			final UserAccount userAccount = LoginService.getPrincipal();
+			result = this.customerRepository.findByUserAccountId(userAccount.getId());
+
+		} catch (final Throwable exc) {
+			result = null;
+
+		}
+		return result;
+	}
+
+	public Customer findByUserAccount(final UserAccount userAccount) {
+		Customer result;
+
+		result = this.customerRepository.findByUserAccountId(userAccount.getId());
+
+		return result;
+	}
+
+	public Boolean principalValido() {
+		final Customer c = (Customer) this.actorService.findByPrincipal();
+		final CreditCard cc = this.creditCardRepository.findByActorId(c.getId());
+		if (!this.tieneFacturasPendientes(c) & cc != null)
+			return true;
+		else
+			return false;
+
+	}
+
+	private boolean tieneFacturasPendientes(final Customer c) {
+		//TODO falta por hacer este método
+		return false;
+	}
+
+	// Dashboard
+	// ====================================================================================
+	public Collection<Customer> findCustomerSpentMore70() {
+		Collection<Customer> result;
+
+		result = this.customerRepository.findCustomerSpentMore70();
+
+		return result;
+	}
+
+	public Collection<Customer> rankingCustomersByInvoices() {
+		Collection<Customer> result;
+
+		result = this.customerRepository.rankingCustomersByInvoices();
+
+		return result;
+	}
+
+	public String minAvgMaxDietsByCustomer() {
+		String result = "";
+
+		result = "Min: " + this.customerRepository.minDietsByCustomer() + ", Avg: " + this.customerRepository.avgDietsByCustomer() + ", Max: " + this.customerRepository.maxDietsByCustomer();
+
+		return result;
+	}
+
+	public Collection<Customer> findCustomerMoreActivities() {
+		Collection<Customer> result;
+
+		result = this.customerRepository.findCustomerMoreActivities();
+
+		return result;
+	}
+
+	public Collection<Customer> findCustomerLessActivities() {
+		Collection<Customer> result;
+
+		result = this.customerRepository.findCustomerLessActivities();
+
+		return result;
+	}
+
+	public Collection<Customer> customerWithMoreCanceledBookings() {
+		Collection<Customer> result;
+
+		result = this.customerRepository.customerWithMoreCanceledBookings();
+
+		return result;
+	}
+
+
+	// Reconstruct
+	// ====================================================================================
+
+	@Autowired
+	Validator	validator;
+
+
+	public Customer reconstruct(final CustomerForm customerForm, final BindingResult binding) {
+		// TODO Auto-generated method stub
+
+		final Customer customer = this.create();
+
+		customer.setName(customerForm.getName());
+		customer.setSurname(customerForm.getSurname());
+		customer.setAddress(customerForm.getAddress());
+		customer.setEmail(customerForm.getEmail());
+		customer.setPhone(customerForm.getPhone());
+		customer.getUserAccount().setUsername(customerForm.getUsername());
+		customer.getUserAccount().setPassword(new Md5PasswordEncoder().encodePassword(customerForm.getPassword(), null));
+		customer.setPicture(customerForm.getPicture());
+
+		/*
+		 * Si el cliente no quiere registrar un tarjeta, crearemos una
+		 * tarjeta fantasma que no será almacenada
+		 */
+		if (!customerForm.isCheck2()) {
+			customerForm.setHolderName("VISA");
+			customerForm.setBrandName("Usuario Fantasma");
+			customerForm.setCVV(451);
+			customerForm.setNumber("4556464860159704");
+			customerForm.setExpirationMonth(02);
+		}
+
+		this.validator.validate(customerForm, binding);
+
+		/*
+		 * Eliminamos la tarjeta fantasma para mostrar el formulario correctamente
+		 */
+		if (!customerForm.isCheck2()) {
+			customerForm.setHolderName(null);
+			customerForm.setBrandName(null);
+			customerForm.setCVV(0);
+			customerForm.setNumber(null);
+			customerForm.setExpirationMonth(0);
+		}
+
+		return customer;
+	}
+
+	public void requestTrainer(final Trainer t, final Customer c) {
+		// TODO Falta por hacer este método.
+
+	}
+
+	public void registerCompetition(Competition competition) {
+		// TODO Auto-generated method stub
+
+		Customer principal = findByPrincipal();
+		Assert.isTrue(checkCompetitionByPrincipal(competition, principal));	//TRUE: customer no registrado; FALSE: customer no registrado
+
+		Qualification qualification = new Qualification();
+
+		qualification.setCompetition(competition);
+		qualification.setCustomer(principal);
+
+		principal.getQualifications().add(qualification);
+		competition.getQualifications().add(qualification);
+
+		//	Almaceno registro
+		qualificationService.save(qualification);
+
+		//	Actualizo base de datos
+		save(principal);
+		competitionService.save(competition);
+
+	}
+
+	private boolean checkCompetitionByPrincipal(Competition competition, Customer principal) {
+		// TODO Auto-generated method stub		
+		boolean resul = true;
+
+		Collection<Qualification> collection = principal.getQualifications();
+
+		for (Qualification qualification : collection) {
+
+			if (qualification.getCompetition().equals(competition)) {
+				resul = false;
+				break;
+			}
+		}
+
+		return resul;
+	}
+}

@@ -1,0 +1,20 @@
+
+package repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import domain.Trainer;
+
+@Repository
+public interface TrainerRepository extends JpaRepository<Trainer, Integer> {
+
+	//Busca un Trainer por su userAccount id
+	@Query("select a from Trainer a where a.userAccount.id = ?1")
+	Trainer findByUserAccountId(int userAccountId);
+
+	//Esta query se usa porque por alguna razón falla en el covertidor el findOne normal
+	@Query("select a from Trainer a where a.id=?1")
+	Trainer findOne2(int trainerId);
+}

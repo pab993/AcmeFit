@@ -1,0 +1,167 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+
+<%@taglib prefix="jstl" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@taglib prefix="security"	uri="http://www.springframework.org/security/tags"%>
+<%@taglib prefix="display" uri="http://displaytag.sf.net"%>
+
+<%@ taglib prefix="acme" tagdir="/WEB-INF/tags" %>
+
+<form:form action="security/register.do" modelAttribute="customerForm">
+
+	<fieldset > 
+	
+	<legend><b> <spring:message code="customer.accountData" /> </b></legend>
+	
+		<acme:textbox code="customer.username" path="username"/>
+		<br/>
+	
+		<acme:password code="customer.password" path="password"/>
+		<br/>
+	
+		<acme:password code="customer.repeatPassword" path="repeatPassword"/>
+	
+	</fieldset>
+	
+	<fieldset > 
+	
+	<legend><b> <spring:message code="customer.personalData" /> </b></legend>
+	
+	<table style="border:0px">
+	
+	<tr>
+		<td>
+			<acme:textbox code="customer.name" path="name"/>
+		</td>
+		
+	</tr>
+	<tr>
+		<td>
+			<acme:textbox code="customer.surname" path="surname"/>
+		</td>
+		
+	</tr>
+	<tr>
+		<td>
+			<acme:textbox code="customer.phone" path="phone"/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<acme:textbox code="customer.email" path="email"/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<acme:textbox code="customer.address" path="address"/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<acme:textbox code="customer.picture" path="picture"/>
+		</td>
+	</tr>
+	
+	</table>
+	
+		 
+		
+		
+	</fieldset>
+	
+	<div id="creditCardForm">
+			
+		<fieldset > 
+			<legend><jstl:out value=">"></jstl:out>   <form:checkbox id="check2Id" path="check2"/> <b><spring:message code="customer.creditCard" /></b></legend>
+			
+			
+			
+			<table style="border:0px">
+				<tr>
+				<td>
+					<acme:textbox code="customer.creditCard.holderName" path="holderName"/>
+				</td>
+				</tr>
+				
+				<tr>
+				<td>
+					<acme:textbox code="customer.creditCard.brandName" path="brandName"/>
+				</td>
+				</tr>
+				
+				<tr>
+				<td>
+					<acme:textbox code="customer.creditCard.number" path="number"/>
+				</td>
+				</tr>
+				
+				<tr>
+				<td>
+					<acme:textbox code="customer.creditCard.expirationMonth" path="expirationMonth"/>
+				</td>
+				</tr>
+				
+				<tr>
+				<td>
+					<acme:textbox code="customer.creditCard.expirationYear" path="expirationYear"/>
+				</td>
+				</tr>
+				
+				<tr>
+				<td>
+					<acme:textbox code="customer.creditCard.cvv" path="CVV"/>
+				</td>
+				</tr>
+			
+			</table>
+			
+		</fieldset>
+	</div>
+	<!-- Terms&Conditions -->
+	
+	<form:checkbox id="check1Id" onclick="functionCheck1();" path="check1"/>
+	<spring:message code="customer.accept" />
+	<a href="termsAndConditions/termsAndConditions.do">
+	<spring:message code="customer.lopd"/></a>
+		
+	
+
+	<acme:submit id="submitButton" name="submit" code="customer.submit"/>
+
+</form:form>
+
+<script type="text/javascript">
+//document.getElementById("creditCardForm").style.visibility = "hidden";
+document.getElementById("submitButton").disabled = true;
+document.getElementById("check1Id").checked = false;
+
+function functionCheck1() {
+	
+	var x = document.getElementById("check1Id").checked;
+	
+	if(x == true){
+		document.getElementById("submitButton").disabled = false;
+	}
+	else{
+		document.getElementById("submitButton").disabled = true;
+	}
+}
+/*
+function functionCheck2() {
+	
+	var x = document.getElementById("check2Id").checked;
+	
+	if(x == true){
+		document.getElementById("creditCardForm").style.visibility = "visible";
+	}
+	else{
+		document.getElementById("creditCardForm").style.visibility = "hidden";
+	}
+}*/
+
+
+</script>

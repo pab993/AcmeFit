@@ -1,0 +1,143 @@
+
+package services;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
+
+import repositories.CustomerRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
+import domain.Customer;
+import forms.CustomerForm;
+
+@Transactional
+@Service
+public class CustomerService {
+
+	// Managed Repository 
+	// ====================================================================================
+
+	@Autowired
+	private CustomerRepository			customerRepository;
+
+	@Autowired
+	private ConfigurationSystemService	configurationSystemService;
+
+
+	// Constructor methods
+	// ====================================================================================
+	public CustomerService() {
+		super();
+	}
+
+	// Simple CRUDS methods 
+	// ====================================================================================
+
+	public Customer create() {
+
+		Customer customer = new Customer();
+
+		customer.setUserAccount(new UserAccount());
+		customer.getUserAccount().setAuthorities(new ArrayList<Authority>());
+
+		Authority authority = new Authority();
+		authority.setAuthority("CUSTOMER");
+
+		customer.getUserAccount().getAuthorities().add(authority);
+
+		customer.setAchievedReward(0);
+		customer.setMonthlyFee(configurationSystemService.findTheOne().getMonthlyPayment());
+
+		return customer;
+	}
+	public Customer findOne(final int id) {
+
+		Assert.isTrue(this.customerRepository.exists(id));
+
+		return this.customerRepository.findOne(id);
+	}
+
+	public Collection<Customer> findAll() {
+
+		Collection<Customer> customers;
+
+		customers = this.customerRepository.findAll();
+		Assert.notEmpty(customers);
+
+		return customers;
+	}
+
+	public Customer save(final Customer customer) {
+		Assert.notNull(customer);
+
+		final Customer saved = this.customerRepository.save(customer);
+
+		return saved;
+	}
+
+	public void delete(final Customer customer) {
+		Assert.notNull(customer, "Customer null");
+		Assert.isTrue(this.customerRepository.exists(customer.getId()), "didn't found");
+
+		this.customerRepository.delete(customer);
+	}
+
+	// Others bussines methods
+	// ====================================================================================
+
+	public Customer findByPrincipal() {
+		Customer result;
+
+		try {
+			final UserAccount userAccount = LoginService.getPrincipal();
+			result = this.customerRepository.findByUserAccountId(userAccount.getId());
+
+		} catch (final Throwable exc) {
+			result = null;
+
+		}
+		return result;
+	}
+
+	public Customer findByUserAccount(final UserAccount userAccount) {
+		Customer result;
+
+		result = this.customerRepository.findByUserAccountId(userAccount.getId());
+
+		return result;
+	}
+
+
+	@Autowired
+	Validator	validator;
+
+
+	public Customer reconstruct(CustomerForm customerForm, BindingResult binding) {
+		// TODO Auto-generated method stub
+
+		Customer customer = this.create();
+
+		customer.setName(customerForm.getName());
+		customer.setSurname(customerForm.getSurname());
+		customer.setAddress(customerForm.getAddress());
+		customer.setEmail(customerForm.getEmail());
+		customer.setPhone(customerForm.getPhone());
+		customer.getUserAccount().setUsername(customerForm.getUsername());
+		customer.getUserAccount().setPassword(new Md5PasswordEncoder().encodePassword(customerForm.getPassword(), null));
+		customer.setPicture(customerForm.getPicture());
+
+		validator.validate(customer, binding);
+
+		return customer;
+	}
+}

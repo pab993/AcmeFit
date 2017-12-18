@@ -1,0 +1,89 @@
+
+package services;
+
+import java.util.Collection;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import repositories.RequestTrainingRepository;
+import domain.Customer;
+import domain.RequestTraining;
+
+@Transactional
+@Service
+public class RequestTrainingService {
+
+	//Repository
+	//======================================================================
+
+	@Autowired
+	private RequestTrainingRepository	requestTrainingRepository;
+
+	@Autowired
+	private CustomerService				customerService;
+
+
+	//Services
+	// ======================================================================
+
+	//CRUD methods
+	//=======================================================================
+
+	public RequestTraining findOne(final int id) {
+		RequestTraining requestTraining;
+
+		requestTraining = this.requestTrainingRepository.findOne(id);
+		Assert.notNull(requestTraining);
+
+		return requestTraining;
+	}
+
+	public Collection<RequestTraining> findAll() {
+
+		Collection<RequestTraining> requestTrainings;
+
+		requestTrainings = this.requestTrainingRepository.findAll();
+		Assert.notNull(requestTrainings);
+
+		return requestTrainings;
+	}
+
+	//Other bussiness methods
+	// ==================================================================
+
+	public Collection<RequestTraining> findAllPendingByCustomer(Customer customer) {
+
+		Collection<RequestTraining> requestTrainings;
+
+		requestTrainings = this.requestTrainingRepository.findAllPendingByCustomer(customer.getId());
+
+		return requestTrainings;
+	}
+
+	public Collection<RequestTraining> findAllByCustomer(Customer customer) {
+
+		Collection<RequestTraining> requestTrainings;
+
+		requestTrainings = this.requestTrainingRepository.findAllByCustomer(customer.getId());
+
+		return requestTrainings;
+	}
+
+	public void cancelled(int requestTrainingId) {
+		Customer customer;
+		RequestTraining requestTraining;
+
+		customer = this.customerService.findByPrincipal();
+		requestTraining = this.findOne(requestTrainingId);
+
+		Assert.isInstanceOf(Customer.class, customer);
+
+		requestTraining.setStatus("DENIED");
+
+		this.requestTrainingRepository.save(requestTraining);
+	}
+}

@@ -1,0 +1,33 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+
+<%@taglib prefix="jstl" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@taglib prefix="security"
+	uri="http://www.springframework.org/security/tags"%>
+<%@taglib prefix="display" uri="http://displaytag.sf.net"%>
+<%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
+
+<jstl:if test="${var == true }">
+<!-- Listing table -->
+		<display:table name="ingredients" id="row" requestURI="${requestURI}"
+			pagesize="5" class = "table table-hover" >
+
+			<spring:message code="ingredient.name" var="nameHeader" />
+			<display:column property="name" title="${nameHeader}" />
+
+			<spring:message code="ingredient.multiplicity" var="multiplicityHeader" />
+			<display:column property="multiplicity" title="${multiplicityHeader}" />
+
+			<spring:message code="ingredient.unit" var="unitHeader" />
+			<display:column property="unit" title="${unitHeader}" />
+			
+
+		</display:table>
+
+		
+	<input type="button" name="cancel" value="<spring:message code="cancel"/>" onclick="javascript: window.location.replace('diet/meals.do?dietId=${dietId}')"/>
+</jstl:if>

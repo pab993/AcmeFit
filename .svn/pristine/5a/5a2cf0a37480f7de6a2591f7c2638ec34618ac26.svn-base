@@ -1,0 +1,28 @@
+# messages.properties
+#
+# Copyright (C) 2017 Universidad de Sevilla
+# 
+# The use of this project is hereby constrained to the conditions of the 
+# TDG Licence, a copy of which you may download from 
+# http://www.tdg-seville.info/License.html
+
+service.name					= Name
+service.openingTime				= Opening time (HH:MM)
+service.closingTime 			= Closing time (HH:MM)
+service.duration 				= Duration (in minutes)
+service.cost 					= Cost
+service.maximumCapacity			= Maximum capacity
+
+service.display					= Display
+service.create					= Create new service
+service.edit					= Edit
+service.save					= Save
+service.cancel					= Cancel
+service.back					= Back
+service.delete.confirm			= Are you sure you want to delete this service?
+service.delete					= Delete
+
+service.commit.error			= Cannot commit this operation
+service.commit.ok				= Operation performed successfully
+
+service.closingTime.noValid		= The closing time must be after the opening time

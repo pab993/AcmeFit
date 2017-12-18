@@ -1,0 +1,72 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+
+<%@taglib prefix="jstl" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@taglib prefix="security"
+	uri="http://www.springframework.org/security/tags"%>
+<%@taglib prefix="display" uri="http://displaytag.sf.net"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+
+<security:authorize access="hasRole('ADMINISTRATOR')">
+	
+	<div>
+		<display:table name="minAvgMaxActivitiesTrainer" id="minAvgMaxActivitiesTrainer" pagesize="5" requestURI="${requestURI}" class="displaytag">
+			<spring:message code="dashboard.minAvgMaxActivitiesTrainer" var="dash1" />
+			<display:column title="${dash1}">
+				<h3> <jstl:out value="${minAvgMaxActivitiesTrainer}" /> </h3> 
+			</display:column>
+		</display:table>
+	</div>
+	
+	<div>
+		<display:table name="minAvgMaxDietsByCustomer" id="minAvgMaxDietsByCustomer" pagesize="5" requestURI="${requestURI}" class="displaytag">
+			<spring:message code="dashboard.minAvgMaxDietsByCustomer" var="dash2" />
+			<display:column title="${dash2}">
+				<h3> <jstl:out value="${minAvgMaxDietsByCustomer}" /> </h3> 
+			</display:column>
+		</display:table>
+	</div>
+	
+	<div>
+		<display:table name="findTrainersMoreActivities" id="findTrainersMoreActivities" pagesize="5" requestURI="${requestURI}" class="displaytag">
+			<spring:message code="dashboard.findTrainersMoreActivities" var="dash3" />
+			<display:column title="${dash3}">
+				<h3> <jstl:out value="${findTrainersMoreActivities.name}" /> </h3> 
+			</display:column>
+		</display:table>
+	</div>
+	
+	<div>
+		<display:table name="findTrainersOrderByPersonalTrainings" id="findTrainersOrderByPersonalTrainings" pagesize="5" requestURI="${requestURI}" class="displaytag">
+			<spring:message code="dashboard.findTrainersOrderByPersonalTrainings" var="dash4" />
+			<display:column title="${dash4}">
+				<h3> <jstl:out value="${findTrainersOrderByPersonalTrainings.name}" /> </h3> 
+			</display:column>
+		</display:table>
+	</div>
+	
+	<div>
+		<display:table name="rankingCustomersByInvoices" id="rankingCustomersByInvoices" pagesize="5" requestURI="${requestURI}" class="displaytag">
+			<spring:message code="dashboard.rankingCustomersByInvoices" var="dash5" />
+			<display:column title="${dash5}">
+				<h3> <jstl:out value="${rankingCustomersByInvoices.name}" /> </h3> 
+			</display:column>
+		</display:table>
+	</div>
+	
+	<div>
+		<display:table name="findCustomerSpentMore70" id="findCustomerSpentMore70" pagesize="5" requestURI="${requestURI}" class="displaytag">
+			<spring:message code="dashboard.findCustomerSpentMore70" var="dash6" />
+			<display:column title="${dash6}">
+				<h3> <jstl:out value="${findCustomerSpentMore70.name}" /> </h3> 
+			</display:column>
+		</display:table>
+	</div>
+	
+	
+
+</security:authorize>

@@ -1,0 +1,80 @@
+
+package domain;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Entity;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.SafeHtml;
+import org.hibernate.validator.constraints.URL;
+
+@Entity
+@Access(AccessType.PROPERTY)
+public class ConfigurationSystem extends DomainEntity {
+
+	//Attributes 
+	// =================================================================
+
+	private String	banner;
+	private Double	monthlyPayment;
+	private Double	discount;
+	private Double	penaltyAmount;
+	private String	cancelTimeLimit;
+
+
+	@SafeHtml
+	@NotBlank
+	@URL
+	public String getBanner() {
+		return this.banner;
+	}
+
+	public void setBanner(final String banner) {
+		this.banner = banner;
+	}
+
+	@Digits(fraction = 2, integer = 12)
+	@Min(0)
+	public Double getMonthlyPayment() {
+		return this.monthlyPayment;
+	}
+
+	public void setMonthlyPayment(final Double monthlyPayment) {
+		this.monthlyPayment = monthlyPayment;
+	}
+
+	@Min(0)
+	@Digits(integer = 12, fraction = 2)
+	public Double getDiscount() {
+		return this.discount;
+	}
+
+	public void setDiscount(final Double discount) {
+		this.discount = discount;
+	}
+
+	@Min(0)
+	@Digits(integer = 12, fraction = 2)
+	public Double getPenaltyAmount() {
+		return this.penaltyAmount;
+	}
+
+	public void setPenaltyAmount(final Double penaltyAmount) {
+		this.penaltyAmount = penaltyAmount;
+	}
+
+	@NotBlank
+	@Pattern(regexp = "^[0-9]*:[0-5][0-9]:[0-5][0-9]$")
+	public String getCancelTimeLimit() {
+		return this.cancelTimeLimit;
+	}
+
+	public void setCancelTimeLimit(final String cancelTimeLimit) {
+		this.cancelTimeLimit = cancelTimeLimit;
+	}
+
+}

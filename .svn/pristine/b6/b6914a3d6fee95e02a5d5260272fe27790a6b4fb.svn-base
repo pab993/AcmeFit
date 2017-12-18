@@ -1,0 +1,39 @@
+
+package repositories;
+
+import java.util.Collection;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import domain.Customer;
+
+@Repository
+public interface CustomerRepository extends JpaRepository<Customer, Integer> {
+
+	//Busca un actor por su userAccount id
+	@Query("select c from Customer c where c.userAccount.id = ?1")
+	Customer findByUserAccountId(int userAccountId);
+
+	//Esta query se usa porque por alguna razón falla en el covertidor el findOne normal
+	//	@Query("select c from Customer c where c.id=?1")
+	//	Customer findOne2(int customerId);
+
+	@Query("select c from Customer c join c.invoices i order by sum(i.totalPrice)")
+	Collection<Customer> rankingCustomersByInvoices();
+
+	//The minimum, the average, and the maximum number of diets per customer
+	@Query("select min(c.requestDiets.size) from Customer c")
+	Double minDietsByCustomer();
+
+	@Query("select avg(c.requestDiets.size) from Customer c")
+	Double avgDietsByCustomer();
+
+	@Query("select max(c.requestDiets.size) from Customer c")
+	Double maxDietsByCustomer();
+
+	//The customers that have spent at least 70% the maximum amount of money that other customers has spent
+	@Query("select c from Customer c join c.invoices i where (i.totalPrice*0.7 >=(select avg(i1.totalPrice) from Invoice i1))")
+	Collection<Customer> findCustomerSpentMore70();
+}

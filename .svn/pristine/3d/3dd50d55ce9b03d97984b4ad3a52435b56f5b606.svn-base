@@ -1,0 +1,65 @@
+
+package controllers;
+
+import java.util.Collection;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import services.DietService;
+import services.NutritionistService;
+import domain.Diet;
+import domain.Nutritionist;
+
+@Controller
+@RequestMapping("/nutritionist")
+public class NutritionistController extends AbstractController {
+
+	@Autowired
+	private NutritionistService	nutritionistService;
+
+	@Autowired
+	private DietService			dietService;
+
+
+	// Constructors
+	// ====================================================================================
+
+	public NutritionistController() {
+		super();
+	}
+
+	//Listing
+	// ====================================================================================
+
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public ModelAndView list() {
+		ModelAndView result;
+
+		Collection<Nutritionist> nutritionists = this.nutritionistService.findAll();
+
+		result = new ModelAndView("nutritionist/list");
+		result.addObject("nutritionists", nutritionists);
+		result.addObject("requestURI", "nutritionist/list.do");
+		return result;
+
+	}
+
+	@RequestMapping(value = "/diets", method = RequestMethod.GET)
+	public ModelAndView list(@RequestParam int nutritionistId) {
+		ModelAndView result;
+
+		Collection<Diet> diets = this.dietService.findDietsByNutritionist(nutritionistId);
+
+		result = new ModelAndView("diet/list");
+		result.addObject("diets", diets);
+		result.addObject("requestURI", "diet/list.do");
+		return result;
+
+	}
+
+}

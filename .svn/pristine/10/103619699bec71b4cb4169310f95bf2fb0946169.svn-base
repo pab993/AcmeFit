@@ -1,0 +1,46 @@
+# messages.properties
+#
+# Copyright (C) 2017 Universidad de Sevilla
+# 
+# The use of this project is hereby constrained to the conditions of the 
+# TDG Licence, a copy of which you may download from 
+# http://www.tdg-seville.info/License.html
+
+personalTraining.create				= Create personal training
+
+personalTraining.nameRoom			= Room name
+personalTraining.nameActivity		= Activity name
+personalTraining.description		= Description
+personalTraining.duration			= Duration (Minute/s)
+personalTraining.intensity			= Intensity
+personalTraining.schedule			= Schedule
+personalTraining.cost		= Cost
+personalTraining.application = Application
+
+confirm.personalTraining.create	= Confirm create personal training
+
+assessment.title 			= Title
+assessment.text 			= Text
+assessment.stars 			= Stars
+assessment.actorName 		= Actor name
+
+postAssessment 				= Post an assessment
+
+display.actor 				= Display profile
+
+personalTraining.trainer.display	= Display trainer profile
+
+
+report.create				= Create report
+
+report.timeSpent			= Time spent
+report.kcalSpent		= Kcal spent
+report.mediumPulse		= Medium pulse
+report.exercisedMuscles			= Exercised muscles
+report.score			= Score
+report.hints			= Hints
+
+personalTraining.createReport	= Create report
+personalTraining.displayReport	= Display report
+
+error.commit.personalTraining	= Cannot commit, check the entered data

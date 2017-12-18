@@ -1,0 +1,20 @@
+
+package repositories;
+
+import java.util.Collection;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import domain.Activity;
+
+@Repository
+public interface ActivityRepository extends JpaRepository<Activity, Integer> {
+
+	@Query("select a from Activity a where a.nameRoom like %?1% or a.nameActivity like %?1% or a.description like %?1% or a.schedule like %?1%")
+	Collection<Activity> search(String keyword);
+
+	@Query("select a from Activity a join a.registersFor rf where rf.customer.id = ?1")
+	Collection<Activity> findAllByCustomerId(int customerId);
+}

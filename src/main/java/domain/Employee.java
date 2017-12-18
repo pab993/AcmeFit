@@ -1,0 +1,50 @@
+
+package domain;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Entity;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.SafeHtml;
+
+@Entity
+@Access(AccessType.PROPERTY)
+public class Employee extends Actor {
+
+	//Attributes 
+	// =================================================================
+
+	private String	idEmployee;
+	private Double	fee;
+
+
+	@SafeHtml
+	@NotBlank
+	//	@Column(unique = true)
+	@Pattern(regexp = "^[a-zA-Z0-9]{3}-[0-9]{5}$")
+	public String getIdEmployee() {
+		return this.idEmployee;
+	}
+
+	public void setIdEmployee(final String idEmployee) {
+		this.idEmployee = idEmployee;
+	}
+
+	@Min(0)
+	@Digits(fraction = 2, integer = 12)
+	public Double getFee() {
+		return this.fee;
+	}
+
+	public void setFee(final Double fee) {
+		this.fee = fee;
+	}
+
+	//Relationships
+	// =================================================================
+
+}

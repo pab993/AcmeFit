@@ -1,0 +1,79 @@
+# messages_es.properties
+#
+# Copyright (C) 2017 Universidad de Sevilla
+# 
+# The use of this project is hereby constrained to the conditions of the 
+# TDG Licence, a copy of which you may download from 
+# http://www.tdg-seville.info/License.html
+
+master.page.administrator				= Administrador
+master.page.register					= Registrarse
+master.page.register.Trainer			= Registrar entrenador
+master.page.register.Nutritionist		= Registrar nutricionista
+master.page.administrator.action.2		= Acción 2
+
+master.page.dashboard					= Tablero
+
+master.page.invoice						= Mis facturas
+
+master.page.customer					= Cliente
+master.page.customer.action.1			= Acción 1
+master.page.customer.action.2			= Acción 2
+
+master.page.profile 					= Perfil
+master.page.profile.action.1 			= Acción 1
+master.page.profile.action.2			= Acción 2
+master.page.profile.action.3			= Acción 3
+
+
+master.page.competition.list			= Catálogo de competiciones
+
+master.page.profile 				= Perfil
+master.page.profile.action.1 		= Acción 1
+master.page.profile.action.2		= Acción 2
+master.page.profile.action.3		= Acción 3
+
+master.page.activities					= Actividades
+master.page.activity.list				= Lista de actividades
+master.page.activity.create				= Crear nueva actividad
+master.page.activity.search				= Buscar actividades
+master.page.curriculum.list				= Curriculum
+master.page.customer.list				= Customers
+master.page.nutritionist.list			= Lista de nutricionistas
+master.page.trainer.list			= Lista de entrenadores
+master.page.creditCard					= Tarjeta de crédito
+master.page.diet						= Dietas
+master.page.diet.myDiets				= Mis dietas
+master.page.diet.allDiets				= Todas las dietas
+master.page.nutritionist.requestsDiets	= Solicitudes a dietas
+master.page.nutritionist.createDiet		= Crear nueva dieta
+master.page.services					= Servicios
+master.page.bookings					= Reservas
+
+master.page.editActor					= Editar perfil
+
+
+master.page.requests					= Peticiones
+master.page.myRequestDiet				= Mis peticiones de dietas
+master.page.myRequestDietPending		= Mis peticiones de dietas pendientes
+master.page.myRequestTraining			= Mis peticiones de entrenamientos personales
+master.page.myRequestTrainingPending	= Mis peticiones de entrenamientos personales pendientes
+
+master.page.editActor					= Editar Perfil
+
+master.page.login 						= Entrar
+master.page.logout 						= Salir
+
+
+master.page.showAssessments				= Mostrar los mejores comentarios
+
+
+master.page.trainer.requestsTrainings	= Peticiones de entr. personales
+
+master.page.eraseMe						= Información sobre datos personales
+master.page.mostrarBarraCookies			= Cookies
+master.page.barraCookies1				= Se hace uso de las cookies JSESSIONID y LANGUAGE
+master.page.barraCookies2				= Más información
+
+master.page.nutritionist.nutri.diets	= Lista de mis dietas
+master.page.nutritionist.diets			= Dietas

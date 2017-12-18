@@ -1,0 +1,34 @@
+# messages.properties
+#
+# Copyright (C) 2017 Universidad de Sevilla
+# 
+# The use of this project is hereby constrained to the conditions of the 
+# TDG Licence, a copy of which you may download from 
+# http://www.tdg-seville.info/License.html
+
+security.login.title	= Login form
+
+security.username		= User name:
+security.password		= Password:
+
+security.login			= Login
+
+security.login.failed	= Your user name or password is wrong! 
+
+customer.accountData	= Credentials
+customer.personalData	= Personal data
+customer.lopd			 = Terms and conditions
+customer.accept			= Accept
+
+customer.username				= Username*
+customer.password				= Password*
+customer.repeatPassword			= Repeat password
+customer.name					= Name*
+customer.surname				= Surname*
+customer.phone					= Phone*
+customer.email					= Email*
+customer.address				= Address*
+customer.picture				= Picture*
+customer.creditCard				= Create my creditCard NOW!
+
+customer.submit					= Next

@@ -1,0 +1,72 @@
+
+package services;
+
+import java.util.Collection;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import repositories.ActivityRepository;
+import domain.Activity;
+import domain.Trainer;
+
+@Transactional
+@Service
+public class ActivityService {
+
+	//Repository
+	//======================================================================
+
+	@Autowired
+	private ActivityRepository	activityRepository;
+
+	//Services
+	// ======================================================================
+
+	@Autowired
+	private ActorService		actorService;
+
+
+	//CRUD methods
+	//=======================================================================
+
+	public Activity findOne(final int id) {
+		Activity activity;
+
+		activity = this.activityRepository.findOne(id);
+		Assert.notNull(activity);
+
+		return activity;
+	}
+
+	public Activity create() {
+		final Activity activity = new Activity();
+		Assert.isInstanceOf(Trainer.class, this.actorService.findByPrincipal());
+		return activity;
+	}
+
+	public Collection<Activity> findAll() {
+
+		Collection<Activity> activities;
+
+		activities = this.activityRepository.findAll();
+		Assert.notNull(activities);
+
+		return activities;
+	}
+
+	//Other bussiness methods
+	// ==================================================================
+
+	public Collection<Activity> search(final String keyword) {
+		Collection<Activity> activities;
+
+		activities = this.activityRepository.search(keyword);
+		Assert.notNull(activities);
+
+		return activities;
+	}
+}

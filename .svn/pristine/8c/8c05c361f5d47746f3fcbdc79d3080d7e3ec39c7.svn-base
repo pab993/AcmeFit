@@ -1,0 +1,43 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+
+<%@taglib prefix="jstl" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@taglib prefix="security"	uri="http://www.springframework.org/security/tags"%>
+<%@taglib prefix="display" uri="http://displaytag.sf.net"%>
+
+<%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
+
+<form:form action="invoice/administrator/edit.do" modelAttribute="invoiceForm">
+	
+	<h2><spring:message code="invoiceform.monthlyPayment" />: --</h2>
+	
+	<fieldset > 
+	
+		
+	
+	<legend><b> <spring:message code="invoice.diets" /> </b></legend>
+	
+		<h3><spring:message code="invoice.priceTotal" />: --</h3> 
+	
+	</fieldset>
+	
+	<fieldset > 
+	
+	<legend><b> <spring:message code="invoice.personalTrainings" /> </b></legend>
+		<h3><spring:message code="invoice.priceTotal" />: --</h3> 
+	
+	</fieldset>
+	
+	<b><spring:message code="invoiceForm.discount" />: --</b>
+	
+	<br/><br/>
+
+	<acme:submit id="submitButton" name="submit" code="submit" />
+	<acme:cancel url="welcome/index.do" code="cancel"/>
+	
+
+</form:form>

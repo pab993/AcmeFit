@@ -1,0 +1,342 @@
+
+package controllers;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import services.ActorService;
+import services.CreditCardService;
+import services.CustomerService;
+import services.DietService;
+import services.MealService;
+import services.NutritionistService;
+import services.RequestDietService;
+import domain.Actor;
+import domain.Assessment;
+import domain.CreditCard;
+import domain.Customer;
+import domain.Diet;
+import domain.Meal;
+import domain.Nutritionist;
+import domain.RequestDiet;
+import forms.RequestDietForm;
+
+@Controller
+@RequestMapping("/diet")
+public class DietController extends AbstractController {
+
+	@Autowired
+	private MealService			mealService;
+
+	@Autowired
+	private DietService			dietService;
+
+	@Autowired
+	private RequestDietService	requestDietService;
+
+	@Autowired
+	private CustomerService		customerService;
+
+	@Autowired
+	private ActorService		actorService;
+
+	@Autowired
+	private CreditCardService	creditCardService;
+
+	@Autowired
+	private NutritionistService	nutritionistService;
+
+
+	// Constructors
+	// ====================================================================================
+
+	public DietController() {
+		super();
+	}
+
+	// Display Trainer
+	// ====================================================================================
+
+	@RequestMapping(value = "/display", method = RequestMethod.GET)
+	public ModelAndView display(@RequestParam final int dietId) {
+		ModelAndView result;
+		Diet diet;
+		Customer principal;
+		Boolean owner;
+		String status = "ACCEPTED";
+
+		owner = false;
+		principal = this.customerService.findByPrincipal();
+		diet = this.dietService.findOne(dietId);
+		final Collection<Assessment> assessments = diet.getAssessments();
+		final Collection<Meal> meals = diet.getMeals();
+		final Collection<RequestDiet> requestDiets = diet.getRequestsDiets();
+
+		for (RequestDiet r : requestDiets)
+			if (r.getCustomer() == principal && r.getStatus().equals(status))
+				owner = true;
+
+		result = new ModelAndView("diet/display");
+		result.addObject("diet", diet);
+		result.addObject("assessments", assessments);
+		result.addObject("meals", meals);
+		result.addObject("owner", owner);
+		result.addObject("requestURI", "diet/display.do");
+
+		return result;
+	}
+
+	// Lists
+	// =====================================================
+
+	@RequestMapping(value = "/allDiets", method = RequestMethod.GET)
+	public ModelAndView allList() {
+		ModelAndView result;
+		Collection<Diet> diets;
+
+		diets = this.dietService.findAll();
+
+		result = new ModelAndView("diet/list");
+		result.addObject("diets", diets);
+		result.addObject("requestURI", "diet/allDiets.do");
+
+		return result;
+	}
+
+	@RequestMapping(value = "/myDiets", method = RequestMethod.GET)
+	public ModelAndView list() {
+		ModelAndView result;
+		Collection<Diet> diets;
+
+		diets = this.dietService.findMyDiets();
+
+		result = new ModelAndView("diet/list2");
+		result.addObject("diets", diets);
+		result.addObject("requestURI", "diet/myDiets.do");
+
+		return result;
+	}
+
+	// Listing Diets
+	// ====================================================================================
+
+	@RequestMapping(value = "/listDiets", method = RequestMethod.GET)
+	public ModelAndView listDiets(@RequestParam final int customerId) {
+		ModelAndView result;
+
+		final Collection<Diet> customerDiets = this.dietService.findMyDietsId(customerId);
+
+		result = new ModelAndView("diet/list");
+		result.addObject("diets", customerDiets);
+		result.addObject("requestURI", "diet/list.do");
+		return result;
+
+	}
+
+	@RequestMapping(value = "/nutritionistDiets", method = RequestMethod.GET)
+	public ModelAndView listNutriDiets() {
+		ModelAndView result;
+		Collection<Diet> diets;
+
+		Nutritionist nutritionist = this.nutritionistService.findByPrincipal();
+		diets = this.dietService.findDietsByNutritionist(nutritionist.getId());
+
+		result = new ModelAndView("diet/listDietsOfNutri");
+		result.addObject("diets", diets);
+		result.addObject("requestURI", "diet/nutritionistDiets.do");
+
+		return result;
+	}
+
+	// Create
+	// =======================================================
+
+	@RequestMapping(value = "/create", method = RequestMethod.GET)
+	public ModelAndView create(@RequestParam final int dietId) {
+		ModelAndView result;
+
+		final Diet diet = this.dietService.findOne(dietId);
+
+		final RequestDietForm requestDietForm = new RequestDietForm();
+		requestDietForm.setRequestDietId(0);
+		requestDietForm.setDiet(diet);
+		result = this.createEditModelAndView(requestDietForm);
+
+		return result;
+	}
+
+	// Listing
+	// ====================================================================================
+
+	@RequestMapping(value = "/meals", method = RequestMethod.GET)
+	public ModelAndView list(@RequestParam final int dietId) {
+		ModelAndView result;
+
+		final Collection<Meal> meals = this.mealService.findMealsByDiet(dietId);
+		final Diet diet = this.dietService.findOne(dietId);
+		final Customer customer = this.customerService.findByPrincipal();
+		Boolean var = false;
+		if (customer != null) {
+			final Collection<RequestDiet> requestsDiets = this.requestDietService.findAllAcceptedByCustomer(customer);
+			final Collection<Diet> diets = new ArrayList<Diet>();
+			for (final RequestDiet r : requestsDiets)
+				diets.add(r.getDiet());
+			if (diets.contains(diet))
+				var = true;
+		}
+
+		result = new ModelAndView("meal/list");
+		result.addObject("meals", meals);
+		result.addObject("var", var);
+		result.addObject("requestURI", "meal/list.do");
+		return result;
+
+	}
+
+	// Application
+	// =====================================================================================
+
+	@RequestMapping(value = "/application", method = RequestMethod.GET)
+	public ModelAndView application(@RequestParam final int dietId) {
+
+		ModelAndView result;
+		final Customer customer = this.customerService.findByPrincipal();
+		final Actor actor = this.actorService.findByPrincipal();
+		final Diet diet = this.dietService.findOne(dietId);
+		final CreditCard creditCard = this.creditCardService.findByActorId(actor.getId());
+
+		final RequestDiet requestDiet = this.requestDietService.findByCustomerAndDiet(customer.getId(), dietId);
+
+		if (requestDiet == null) {
+
+			if (creditCard == null || !this.creditCardService.checkValidity(creditCard)) {
+				result = new ModelAndView("requestDiet/invalidCreditCard");
+				result.addObject("requestURI", "diet/invalidCreditCard.do");
+				return result;
+			} else
+				result = new ModelAndView("redirect:create.do?dietId=" + dietId);
+
+		} else {
+			result = new ModelAndView("requestDiet/display");
+			final RequestDietForm requestDietForm = this.requestDietService.reconstructForm(requestDiet);
+			result.addObject("requestDietForm", requestDietForm);
+			result.addObject("requestDietStatus", requestDiet.getStatus());
+			result.addObject("nutritionistId", diet.getNutritionist().getId());
+		}
+
+		return result;
+	}
+
+	@RequestMapping(value = "/applicationConfirm", method = RequestMethod.POST, params = "save")
+	public ModelAndView save(final RequestDietForm requestDietForm, final BindingResult binding) {
+		ModelAndView result;
+
+		if (binding.hasErrors())
+			result = this.createEditModelAndView(requestDietForm);
+		else
+			try {
+				final RequestDiet requestDiet = this.requestDietService.reconstruct(requestDietForm, binding);
+				this.requestDietService.save(requestDiet);
+				result = new ModelAndView("redirect:/nutritionist/diets.do?nutritionistId=" + requestDiet.getDiet().getNutritionist().getId());
+
+			} catch (final Throwable oops) {
+				result = this.createEditModelAndView(requestDietForm, "error.commit.request");
+			}
+		return result;
+
+	}
+
+	@RequestMapping(value = "/applicationConfirm", method = RequestMethod.POST, params = "delete")
+	public ModelAndView delete(final RequestDietForm requestDietForm, final BindingResult binding) {
+		ModelAndView result;
+
+		final RequestDiet requestDiet = this.requestDietService.findOne(requestDietForm.getRequestDietId());
+
+		try {
+			this.requestDietService.delete(requestDiet);
+			result = new ModelAndView("redirect:/nutritionist/diets.do?nutritionistId=" + requestDiet.getDiet().getNutritionist().getId());
+		} catch (final Throwable oops) {
+			result = this.createEditModelAndView(requestDietForm, "error.commit.request");
+		}
+		return result;
+	}
+
+	@RequestMapping(value = "/invalidCreditCard", method = RequestMethod.GET)
+	public ModelAndView invalidCreditCard() {
+		ModelAndView result;
+
+		result = new ModelAndView("diet/invalidCreditCard");
+
+		return result;
+	}
+
+	@RequestMapping(value = "/createDiet", method = RequestMethod.GET)
+	public ModelAndView createDiet() {
+
+		final Diet diet = this.dietService.create();
+
+		final ModelAndView resul = new ModelAndView("diet/create");
+		resul.addObject("diet", diet);
+		resul.addObject("requestURI", "diet/create.do");
+
+		return resul;
+	}
+
+	@RequestMapping(value = "/createDiet", method = RequestMethod.POST, params = "submit")
+	public ModelAndView create(final Diet diet, final BindingResult binding) {
+
+		ModelAndView result;
+
+		/*try {
+			if (binding.hasErrors()) {
+				result = new ModelAndView("diet/create");
+				result.addObject("diet", diet);
+				result.addObject("requestURI", "diet/create.do");
+			} else {
+
+				this.dietService.save(diet);
+
+				result = new ModelAndView("redirect:/diet/list.do");
+			}
+		} catch (final Throwable oops) {
+			result = new ModelAndView("diet/create");
+			result.addObject("diet", diet);
+			result.addObject("requestURI", "diet/create.do");
+		}*/
+		this.dietService.save(diet);
+
+		result = new ModelAndView("redirect:/diet/nutritionistDiets.do");
+		return result;
+	}
+
+	// Ancillary Methods
+	// ===============================================================================
+
+	protected ModelAndView createEditModelAndView(final RequestDietForm requestDietForm) {
+		ModelAndView result;
+
+		result = this.createEditModelAndView(requestDietForm, null);
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView(final RequestDietForm requestDietForm, final String message) {
+		ModelAndView result;
+
+		result = new ModelAndView("requestDiet/display");
+
+		result.addObject("nutritionistId", requestDietForm.getDiet().getNutritionist().getId());
+		result.addObject("requestDietForm", requestDietForm);
+		result.addObject("message", message);
+
+		return result;
+	}
+
+}

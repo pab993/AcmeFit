@@ -1,0 +1,39 @@
+# messages.properties
+#
+# Copyright (C) 2017 Universidad de Sevilla
+# 
+# The use of this project is hereby constrained to the conditions of the 
+# TDG Licence, a copy of which you may download from 
+# http://www.tdg-seville.info/License.html
+
+invoice.diets			= Diets accepted
+invoice.priceTotal		= Price total
+invoice.personalTrainings	= Personal trainings accepted
+invoiceform.monthlyPayment = Fixed rate
+invoiceForm.discount = Discount
+
+					
+invoice.needPay			= You must pay the pending invoice to stay with us
+						
+invoice.details			= Invoice's details
+invoice.customer		= Customer
+invoice.totalPrice		= Total price
+invoice.invoiceDate		= Invoice date
+invoice.paid			= Paid
+invoice.display			= Display invoice
+
+lineInvoice.concept		= Concept
+lineInvoice.quantity	= Quantity
+lineInvoice.price		= Price
+
+invoice.cancel			= Back
+
+invoice.commit.error	= Cannot commit this operation
+
+
+invoice.print					= Preview
+invoice.printInvoiceButton		= Preview
+
+invoice.pay			= Pay
+
+invoice.lineInvoices			= Line of invoices

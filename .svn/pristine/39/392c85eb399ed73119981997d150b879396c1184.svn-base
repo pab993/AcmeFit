@@ -1,0 +1,14 @@
+# messages_es.properties
+#
+# Copyright (C) 2017 Universidad de Sevilla
+# 
+# The use of this project is hereby constrained to the conditions of the 
+# TDG Licence, a copy of which you may download from 
+# http://www.tdg-seville.info/License.html
+
+dashboard.minAvgMaxActivitiesTrainer			= Minimo, Media y Máximo de actividades por entrenador
+dashboard.minAvgMaxDietsByCustomer				= Minimo, Media y Máximo de dietas solicitadas por cliente		
+dashboard.findTrainersMoreActivities			= Entrenadores ordenados por mayor numero de actividades realizadas
+dashboard.findTrainersOrderByPersonalTrainings	= Entrenadores ordenados por mayor numero de entrenamientos personales realizados
+dashboard.rankingCustomersByInvoices			= Clientes ordenados por el gasto de sus facturas
+dashboard.findCustomerSpentMore70				= Clientes cuya media de gasto está por encima del 70%

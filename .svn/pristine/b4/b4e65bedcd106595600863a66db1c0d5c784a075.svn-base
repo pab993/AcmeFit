@@ -1,0 +1,141 @@
+
+package services;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
+
+import repositories.AssessmentRepository;
+import domain.Actor;
+import domain.Assessment;
+import domain.Comentable;
+import forms.AssessmentForm;
+
+@Transactional
+@Service
+public class AssessmentService {
+
+	// Repositories
+	// ====================================================================
+
+	@Autowired
+	private AssessmentRepository	assessmentRepository;
+
+	// Supporting services
+	// ====================================================================
+
+	@Autowired
+	private ComentableService		comentableService;
+
+	@Autowired
+	private ActorService			actorService;
+
+
+	// Simple CRUD methods
+	// ====================================================================
+
+	public Assessment findOne(int assessmentId) {
+		Assert.isTrue(assessmentId != 0);
+		Assessment result;
+
+		result = this.assessmentRepository.findOne(assessmentId);
+
+		return result;
+	}
+
+	public Collection<Assessment> findAll() {
+		Collection<Assessment> result;
+
+		result = this.assessmentRepository.findAll();
+
+		return result;
+	}
+
+	public Assessment create(Comentable comentable) {
+		Assessment result;
+		Actor principal;
+		Date createMoment;
+
+		principal = this.actorService.findByPrincipal();
+		Assert.notNull(principal);
+
+		long l = 10;
+		createMoment = new Date(System.currentTimeMillis() - l);
+		result = new Assessment();
+		result.setCreateMoment(createMoment);
+		result.setActor(principal);
+		comentable.getAssessments().add(result);
+		result.setComentable(comentable);
+
+		return result;
+	}
+
+	public Assessment save(Assessment assessment) {
+		Assert.notNull(assessment);
+		Assessment result;
+
+		result = this.assessmentRepository.save(assessment);
+
+		return result;
+	}
+
+
+	// Other business methods
+	// ===================================================================
+
+	@Autowired
+	private Validator	validator;
+
+
+	public Assessment reconstruct(AssessmentForm assessmentForm, BindingResult binding) {
+		//Comentable comentable2 = comentableService.findOne(assessmentForm.getIdComentable());
+		Comentable comentable = this.comentableService.findOneAux(assessmentForm.getIdComentable());
+		Assessment res = this.create(comentable);
+		res.setStars(assessmentForm.getStars());
+		res.setText(assessmentForm.getText());
+		res.setTitle(assessmentForm.getTitle());
+		this.validator.validate(res, binding);
+
+		return res;
+
+	}
+
+	public Collection<Assessment> filterAssessments(int actorId) {
+		Collection<Assessment> result;
+
+		result = this.assessmentRepository.findAllByActor(actorId);
+
+		return result;
+	}
+
+	public Collection<Assessment> find4Assessments() {
+		Collection<Assessment> result;
+		Collection<Assessment> res = new HashSet<>();
+		result = this.assessmentRepository.find4Assessments();
+		Assert.notNull(result);
+		int i = 0;
+		for (Assessment a : result) {
+			res.add(a);
+			i++;
+			if (i == 4)
+				break;
+		}
+		Assert.notNull(res);
+		return res;
+	}
+
+	//	public void banMethod(int assessmentId) {
+	//		Assessment assessment = this.findOne(assessmentId);
+	//		assessment.setBan(!assessment.getBan());
+	//		this.save(assessment);
+	//		
+	//	}
+}

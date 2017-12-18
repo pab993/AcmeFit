@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+ * converters.xml
+ *
+ * Copyright (C) 2017 Universidad de Sevilla
+ * 
+ * The use of this project is hereby constrained to the conditions of the 
+ * TDG Licence, a copy of which you may download from 
+ * http://www.tdg-seville.info/License.html
+ -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd		
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd		
+	">
+
+	<util:list id="converters">
+		<bean class="converters.ActorToStringConverter"/>
+		<bean class="converters.StringToActorConverter"/>
+		
+		<bean class="converters.ActivityToStringConverter"/>
+		<bean class="converters.StringToActivityConverter"/>
+
+		<bean class="converters.TrainerToStringConverter"/>
+		<bean class="converters.StringToTrainerConverter"/>
+		
+		<bean class="converters.StringToActorConverter" />
+		<bean class="converters.ActorToStringConverter" />
+		
+		<bean class="converters.StringToActivityConverter" />
+		<bean class="converters.ActivityToStringConverter" />
+		
+		<bean class="converters.StringToEmployeeConverter" />
+		<bean class="converters.EmployeeToStringConverter" />
+		
+		<bean class="converters.StringToCurriculumConverter" />
+		<bean class="converters.CurriculumToStringConverter" />
+		
+		<bean class="converters.StringToLineInvoiceConverter" />
+		<bean class="converters.LineInvoiceToStringConverter" />
+
+		<bean class="converters.StringToAssessmentConverter" />
+		<bean class="converters.AssessmentToStringConverter" />
+		
+		<bean class="converters.StringToCustomerConverter" />
+		<bean class="converters.CustomerToStringConverter" />
+		
+		<bean class="converters.StringToInvoiceConverter" />
+		<bean class="converters.InvoiceToStringConverter" />
+
+		<bean class="converters.ComentableToStringConverter" /> 
+  		<bean class="converters.StringToComentableConverter" />	
+  		
+  		<bean class="converters.NutritionistToStringConverter" /> 
+  		<bean class="converters.StringToNutritionistConverter" />	
+  		
+  		<bean class="converters.DietToStringConverter" /> 
+  		<bean class="converters.StringToDietConverter" />			
+  		
+  		<bean class="converters.AdditionalServiceToStringConverter" /> 
+  		<bean class="converters.StringToAdditionalServiceConverter" />	
+  		
+  		<bean class="converters.BookingToStringConverter" /> 
+  		<bean class="converters.StringToBookingConverter" />	
+
+  		<bean class="converters.RequestDietToStringConverter" /> 
+  		<bean class="converters.StringToRequestDietConverter" />
+  		
+    	<bean class="converters.RequestTrainingToStringConverter" /> 
+  		<bean class="converters.StringToRequestTrainingConverter" />
+  		
+  		<bean class="converters.PersonalTrainingToStringConverter" /> 
+  		<bean class="converters.StringToPersonalTrainingConverter" />		
+  		
+	</util:list>
+	
+</beans>

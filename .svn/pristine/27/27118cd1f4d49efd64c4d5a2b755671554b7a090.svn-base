@@ -1,0 +1,18 @@
+# messages.properties
+#
+# Copyright (C) 2017 Universidad de Sevilla
+# 
+# The use of this project is hereby constrained to the conditions of the 
+# TDG Licence, a copy of which you may download from 
+# http://www.tdg-seville.info/License.html
+
+dashboard.minAvgMaxActivitiesTrainer			= Minimum, Average and maximum of activities by trainer
+dashboard.findTrainersLessActivities			= The trainer/s who has/have taught less activities
+dashboard.findTrainersMoreActivities			= The trainer/s who has/have taught more activities
+dashboard.findTrainersOrderByPersonalTrainings	= The ranking of trainer according the personal trainings that he or she has done
+
+dashboard.minAvgMaxDietsByCustomer				= Minimum, Average and maximum of request diets by customers		
+dashboard.rankingCustomersByInvoices			= The ranking of customer according their monthly bills.		
+dashboard.findCustomerSpentMore70				= The customers that have spent at least 70% the maximum amount of money that other customers has spent
+dashboard.findCustomerMoreActivities			= The customer/s who has/have sign up more activities
+dashboard.findCustomerLessActivities			= The customer/s who has/have sign up less activities

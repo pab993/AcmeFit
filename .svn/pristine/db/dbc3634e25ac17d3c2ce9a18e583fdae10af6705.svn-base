@@ -1,0 +1,54 @@
+
+package services;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import repositories.EmployeeRepository;
+import security.LoginService;
+import security.UserAccount;
+import domain.Employee;
+
+@Transactional
+@Service
+public class EmployeeService {
+
+	// Managed Repository 
+	// ====================================================================================
+
+	@Autowired
+	private EmployeeRepository	employeeRepository;
+
+
+	// Simple CRUDS methods 
+	// ====================================================================================
+
+	public Employee findOne(int employeeId) {
+		// TODO Auto-generated method stub
+		Employee employee;
+		employee = this.employeeRepository.findOne(employeeId);
+		Assert.notNull(employee);
+		return employee;
+	}
+
+	// Others bussines methods
+	// ====================================================================================
+
+	public Employee findByPrincipal() {
+		Employee result;
+
+		try {
+			final UserAccount userAccount = LoginService.getPrincipal();
+			result = this.employeeRepository.findByUserAccountId(userAccount.getId());
+
+		} catch (final Throwable exc) {
+			result = null;
+
+		}
+		return result;
+	}
+
+}

@@ -1,0 +1,107 @@
+
+package services;
+
+import javax.transaction.Transactional;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import utilities.AbstractTest;
+import domain.Curriculum;
+import domain.Employee;
+import forms.CurriculumForm;
+
+@Transactional
+@ContextConfiguration(locations = {
+	"classpath:spring/junit.xml"
+})
+@RunWith(SpringJUnit4ClassRunner.class)
+public class CurriculumServiceTest extends AbstractTest {
+
+	// The SUT
+	// ====================================================
+
+	@Autowired
+	private CurriculumService	curriculumService;
+
+	@Autowired
+	private EmployeeService		employeeService;
+
+
+	// Tests
+	// ====================================================
+
+	/*
+	 * 
+	 *
+	 */
+
+	public void correctCurriculumTest(final String username, final Curriculum curriculum, final Class<?> expected) {
+
+		Class<?> caught = null;
+
+		try {
+
+			this.authenticate(username);
+
+			CurriculumForm curriculumForm = this.curriculumService.reconstructForm(curriculum);
+			Curriculum curriculum2 = this.curriculumService.reconstruct(curriculumForm, null);
+			this.curriculumService.save(curriculum2);
+
+			this.unauthenticate();
+
+		} catch (Throwable oops) {
+
+			caught = oops.getClass();
+
+		}
+
+		this.checkExceptions(expected, caught);
+
+	}
+
+	//Drivers
+	// ===================================================
+
+	@Test
+	public void driverCorrectCurriculumTest() {
+		Curriculum curriculum = this.curriculumService.findOne(101);
+		Curriculum curriculum2 = this.curriculumService.findOne(102);
+		Curriculum curriculum3 = new Curriculum();
+		curriculum3.setAcademicFormation(null);
+		Employee employee1 = this.employeeService.findByPrincipal();
+		curriculum3.setEmployee(employee1);
+		curriculum3.setExperience(curriculum2.getExperience());
+		curriculum3.setPhotograph(curriculum2.getPhotograph());
+		Curriculum curriculum4 = new Curriculum();
+		curriculum4.setAcademicFormation(curriculum2.getAcademicFormation());
+		Employee employee2 = this.employeeService.findByPrincipal();
+		curriculum4.setEmployee(employee2);
+		curriculum4.setExperience(curriculum2.getExperience());
+		curriculum4.setPhotograph("Esto no es una URL");
+
+		final Object testingData[][] = {
+			// Un curriculum válido -> true
+			{
+				"trainer1", curriculum, null
+			},
+			// Editar y guardar un curriculum que no me pertenece -> false
+			{
+				"nutritionist3", curriculum2, IllegalArgumentException.class
+			},
+			// Un curriculum con su formación academica vacía
+			{
+				"nutritionist3", curriculum3, NullPointerException.class
+			},
+			// Una foto del curriculum que no es una URL
+			{
+				"nutritionist3", curriculum4, NullPointerException.class
+			}
+		};
+		for (int i = 0; i < testingData.length; i++)
+			this.correctCurriculumTest((String) testingData[i][0], (Curriculum) testingData[i][1], (Class<?>) testingData[i][2]);
+	}
+}

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- 
+ * tiles_es.xml
+ *
+ * Copyright (C) 2017 Universidad de Sevilla
+ * 
+ * The use of this project is hereby constrained to the conditions of the 
+ * TDG Licence, a copy of which you may download from 
+ * http://www.tdg-seville.info/License.html
+ -->
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+      
+<tiles-definitions>
+
+	<definition name="personalTraining/createReport" extends="master.page">	
+		<put-attribute name="title" value="Crear informe" />
+		<put-attribute name="body" value="/views/personalTraining/createReport.jsp" />
+	</definition>
+
+	<definition name="personalTraining/create" extends="master.page">	
+		<put-attribute name="title" value="Crear entrenamiento personal" />
+		<put-attribute name="body" value="/views/personalTraining/create.jsp" />
+	</definition>
+	
+	<definition name="personalTraining/display" extends="master.page">	
+		<put-attribute name="title" value="Ver entrenamiento personal" />
+		<put-attribute name="body" value="/views/personalTraining/display.jsp" />
+	</definition>
+	
+	<definition name="personalTraining/displayReport" extends="master.page">	
+		<put-attribute name="title" value="Ver informe" />
+		<put-attribute name="body" value="/views/personalTraining/displayReport.jsp" />
+	</definition>
+
+	<definition name="personalTraining/list" extends="master.page">	
+		<put-attribute name="title" value="Lista de entrenamientos personales" />
+		<put-attribute name="body" value="/views/personalTraining/list.jsp" />
+	</definition>
+	
+</tiles-definitions>

@@ -1,0 +1,29 @@
+# messages.properties
+#
+# Copyright (C) 2017 Universidad de Sevilla
+# 
+# The use of this project is hereby constrained to the conditions of the 
+# TDG Licence, a copy of which you may download from 
+# http://www.tdg-seville.info/License.html
+
+booking.moment 					= Booking moment
+booking.status 					= Status
+booking.withPenalty 			= With penalty
+
+booking.book					= Book
+booking.save					= Save
+booking.cancel					= Cancel
+booking.back					= Back
+booking.cancelBooking.confirm	= Are you sure you want to cancel this booking?
+booking.cancelBooking			= Cancel booking
+
+booking.commit.error			= Cannot commit this operation
+booking.commit.ok				= Operation performed successfully
+
+booking.creditCard.noValid		= You must have register a valid credit card
+
+booking.yes						= Yes
+booking.no						= No
+
+booking.alertCancel1			= If you cancel a reservation with a difference less than
+booking.alertCancel2			= hours with the time of the reservation will have a penalty of

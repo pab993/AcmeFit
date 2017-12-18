@@ -1,0 +1,29 @@
+# messages.properties
+#
+# Copyright (C) 2017 Universidad de Sevilla
+# 
+# The use of this project is hereby constrained to the conditions of the 
+# TDG Licence, a copy of which you may download from 
+# http://www.tdg-seville.info/License.html
+
+searchForm.keyword			= Enter a search criterion
+searchForm.search			= Search
+
+searchForm.keyword			= Introduzca un criterio de búsqueda
+searchForm.search			= Buscar
+
+competition.prize			= Prize
+competition.description		= Description
+competition.rules			= Rules
+competition.startDate		= Start date
+competition.closingDate		= End date
+
+postAssessment 				= Post assessment
+display.actor 				= View profile
+
+
+activity.trainer.display	= Display profile of trainer
+activity.display			= Display activity
+activity.cancel				= Back
+
+searchForm.commit.error		= Cannot commit this operation

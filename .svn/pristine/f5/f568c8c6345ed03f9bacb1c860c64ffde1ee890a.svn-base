@@ -1,0 +1,97 @@
+
+package domain;
+
+import java.util.Date;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.Valid;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.SafeHtml;
+import org.springframework.format.annotation.DateTimeFormat;
+
+@Entity
+@Access(AccessType.PROPERTY)
+@Table(indexes = {
+	@Index(columnList = "moment", unique = false), @Index(columnList = "status", unique = false), @Index(columnList = "withPenalty", unique = false)
+})
+public class Booking extends DomainEntity {
+
+	//Attributes
+	// =================================================================
+
+	private Date	moment;
+	private Boolean	withPenalty;
+	private String	status;
+
+
+	@SafeHtml
+	@NotBlank
+	@Pattern(regexp = "^CONFIRMED|CANCELED$")
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(final String status) {
+		this.status = status;
+	}
+
+	public Boolean getWithPenalty() {
+		return this.withPenalty;
+	}
+
+	public void setWithPenalty(final Boolean withPenalty) {
+		this.withPenalty = withPenalty;
+	}
+
+	@NotNull
+	@Future
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
+	public Date getMoment() {
+		return this.moment;
+	}
+
+	public void setMoment(final Date moment) {
+		this.moment = moment;
+	}
+
+
+	//Relationships
+	// ==========================================================
+
+	private Customer			customer;
+	private AdditionalService	service;
+
+
+	@Valid
+	@ManyToOne(optional = false)
+	public Customer getCustomer() {
+		return this.customer;
+	}
+
+	public void setCustomer(final Customer customer) {
+		this.customer = customer;
+	}
+
+	@Valid
+	@ManyToOne(optional = false)
+	public AdditionalService getService() {
+		return this.service;
+	}
+
+	public void setService(final AdditionalService service) {
+		this.service = service;
+	}
+
+}

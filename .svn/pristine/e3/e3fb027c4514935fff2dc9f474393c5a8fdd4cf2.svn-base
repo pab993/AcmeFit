@@ -1,0 +1,37 @@
+
+package controllers.administrator;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import controllers.AbstractController;
+
+@Controller
+@RequestMapping("/administrator")
+public class AdministratorController extends AbstractController {
+
+	// Constructors -----------------------------------------------------------
+
+	public AdministratorController() {
+		super();
+	}
+
+	// Services
+	// ========================================================================
+
+	// DashBoard
+	// ============================================================================
+
+	@RequestMapping(value = "/dashboard", method = RequestMethod.GET)
+	public ModelAndView list() {
+
+		ModelAndView result;
+
+		result = new ModelAndView("administrator/dashboard");
+		result.addObject("requestURI", "administrator/dashboard.do");
+
+		return result;
+	}
+}

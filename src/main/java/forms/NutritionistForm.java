@@ -1,0 +1,199 @@
+
+package forms;
+
+import javax.persistence.Column;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.CreditCardNumber;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.SafeHtml;
+import org.hibernate.validator.constraints.URL;
+
+public class NutritionistForm {
+
+	// Atributes ------------------
+
+	private String	username;
+	private String	password;
+	private String	repeatPassword;
+	private String	name;
+	private String	surname;
+	private String	phone;
+	private String	email;
+	private String	address;
+	private String	picture;
+
+	// CreditCard
+
+	private String	brandName;
+	private String	number;
+	private int		expirationMonth;
+	private int		expirationYear;
+	private int		CVV;
+	private String	holderName;
+
+
+	@SafeHtml
+	@NotBlank
+	public String getHolderName() {
+		return this.holderName;
+	}
+
+	public void setHolderName(String holderName) {
+		this.holderName = holderName;
+	}
+
+	@SafeHtml
+	@NotBlank
+	public String getBrandName() {
+		return this.brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
+
+	@SafeHtml
+	@NotBlank
+	@CreditCardNumber
+	public String getNumber() {
+		return this.number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
+	@Range(min = 1, max = 12)
+	public int getExpirationMonth() {
+		return this.expirationMonth;
+	}
+
+	public void setExpirationMonth(int expirationMonth) {
+		this.expirationMonth = expirationMonth;
+	}
+
+	@Min(2017)
+	public int getExpirationYear() {
+		return this.expirationYear;
+	}
+
+	public void setExpirationYear(int expirationYear) {
+		this.expirationYear = expirationYear;
+	}
+
+	@Range(min = 100, max = 999)
+	public int getCVV() {
+		return this.CVV;
+	}
+
+	public void setCVV(int CVV) {
+		this.CVV = CVV;
+	}
+
+
+	// Aux
+
+	private boolean	check1;
+	private boolean	check2;
+
+
+	@SafeHtml
+	@Column(unique = true)
+	@Size(min = 5, max = 32)
+	public String getUsername() {
+		return this.username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	@SafeHtml
+	@Size(min = 5, max = 32)
+	public String getPassword() {
+		return this.password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	@SafeHtml
+	@NotNull(message = "Passwords do not match")
+	public String getRepeatPassword() {
+		return this.repeatPassword;
+	}
+	public void setRepeatPassword(String repeatPassword) {
+		this.repeatPassword = repeatPassword;
+	}
+	@SafeHtml
+	@NotBlank
+	public String getName() {
+		return this.name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	@SafeHtml
+	@NotBlank
+	public String getSurname() {
+		return this.surname;
+	}
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+	@SafeHtml
+	@Pattern(regexp = "^[(][+][0-9]{2,3}[)][0-9]{9}$")
+	public String getPhone() {
+		return this.phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	@SafeHtml
+	@Email
+	@NotBlank
+	@Column(unique = true)
+	public String getEmail() {
+		return this.email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@SafeHtml
+	@NotBlank
+	public String getAddress() {
+		return this.address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	@SafeHtml
+	@NotBlank
+	@URL
+	public String getPicture() {
+		return this.picture;
+	}
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
+
+	public boolean isCheck1() {
+		return this.check1;
+	}
+	public void setCheck1(boolean check1) {
+		this.check1 = check1;
+	}
+	public boolean isCheck2() {
+		return this.check2;
+	}
+	public void setCheck2(boolean check2) {
+		this.check2 = check2;
+	}
+
+	// CreditCard
+}

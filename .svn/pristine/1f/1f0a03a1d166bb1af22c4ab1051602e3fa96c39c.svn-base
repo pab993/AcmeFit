@@ -1,0 +1,220 @@
+
+package services;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
+
+import repositories.TrainerRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
+import domain.Activity;
+import domain.PersonalTraining;
+import domain.Trainer;
+import forms.TrainerForm;
+
+@Transactional
+@Service
+public class TrainerService {
+
+	// Managed Repository 
+	// ====================================================================================
+
+	@Autowired
+	private TrainerRepository	trainerRepository;
+
+
+	// Constructor methods
+	// ====================================================================================
+
+	public TrainerService() {
+		super();
+	}
+
+	// Simple CRUDS methods 
+	// ====================================================================================
+
+	public Trainer findOne(final int id) {
+
+		Assert.isTrue(this.trainerRepository.exists(id));
+
+		return this.trainerRepository.findOne(id);
+	}
+
+	public Trainer findOne2(final int id) {
+
+		Assert.isTrue(this.trainerRepository.exists(id));
+
+		return this.trainerRepository.findOne2(id);
+	}
+
+	public Collection<Trainer> findAll() {
+
+		Collection<Trainer> trainers;
+
+		trainers = this.trainerRepository.findAll();
+		Assert.notEmpty(trainers);
+
+		return trainers;
+	}
+
+	public Trainer create() {
+
+		final Trainer trainer = new Trainer();
+		Collection<PersonalTraining> personalTrainings;
+		Collection<Activity> activities;
+		String idEmployee;
+
+		trainer.setUserAccount(new UserAccount());
+		trainer.getUserAccount().setAuthorities(new ArrayList<Authority>());
+
+		final Authority authority = new Authority();
+		authority.setAuthority("TRAINER");
+		personalTrainings = new HashSet<PersonalTraining>();
+		activities = new HashSet<Activity>();
+		idEmployee = "TRA00000";
+
+		trainer.getUserAccount().getAuthorities().add(authority);
+
+		trainer.setPersonalTrainings(personalTrainings);
+		trainer.setActivities(activities);
+		trainer.setIdEmployee(idEmployee);
+		trainer.setFee(0.0);
+
+		return trainer;
+	}
+	public Trainer save(final Trainer trainer) {
+		Assert.notNull(trainer);
+
+		final Trainer saved = this.trainerRepository.save(trainer);
+
+		return saved;
+	}
+
+	public void delete(final Trainer trainer) {
+		Assert.notNull(trainer, "Trainer null");
+		Assert.isTrue(this.trainerRepository.exists(trainer.getId()), "didn't found");
+
+		this.trainerRepository.delete(trainer);
+	}
+
+	// Others bussines methods
+	// ====================================================================================
+
+	public Trainer findByPrincipal() {
+		Trainer result;
+
+		try {
+			final UserAccount userAccount = LoginService.getPrincipal();
+			result = this.trainerRepository.findByUserAccountId(userAccount.getId());
+
+		} catch (final Throwable exc) {
+			result = null;
+
+		}
+		return result;
+	}
+
+	public Trainer findByUserAccount(final UserAccount userAccount) {
+		Trainer result;
+
+		result = this.trainerRepository.findByUserAccountId(userAccount.getId());
+
+		return result;
+	}
+
+	// Others bussines methods
+	// ====================================================================================
+
+	public String minAvgMaxActivitiesTrainer() {
+		String result = "";
+
+		result = "Min: " + this.trainerRepository.minActivitiesTrainer() + ", Avg: " + this.trainerRepository.avgActivitiesTrainer() + ", Max: " + this.trainerRepository.maxActivitiesTrainer();
+
+		return result;
+	}
+
+	public Collection<Trainer> findTrainersMoreActivities() {
+		Collection<Trainer> result;
+
+		result = this.trainerRepository.findTrainersMoreActivities();
+
+		return result;
+	}
+
+	public Collection<Trainer> findTrainersLessActivities() {
+		Collection<Trainer> result;
+
+		result = this.trainerRepository.findTrainersLessActivities();
+
+		return result;
+	}
+
+	public Collection<Trainer> findTrainersOrderByPersonalTrainings() {
+		Collection<Trainer> result;
+
+		result = this.trainerRepository.findTrainersOrderByPersonalTrainings();
+
+		return result;
+	}
+
+
+	// Reconstruct
+	// ====================================================================================
+
+	@Autowired
+	Validator	validator;
+
+
+	public Trainer reconstruct(final TrainerForm trainerForm, final BindingResult binding) {
+		// TODO Auto-generated method stub
+
+		final Trainer trainer = this.create();
+
+		trainer.setName(trainerForm.getName());
+		trainer.setSurname(trainerForm.getSurname());
+		trainer.setAddress(trainerForm.getAddress());
+		trainer.setEmail(trainerForm.getEmail());
+		trainer.setPhone(trainerForm.getPhone());
+		trainer.getUserAccount().setUsername(trainerForm.getUsername());
+		trainer.getUserAccount().setPassword(new Md5PasswordEncoder().encodePassword(trainerForm.getPassword(), null));
+		trainer.setPicture(trainerForm.getPicture());
+
+		/*
+		 * Si el cliente no quiere registrar un tarjeta, crearemos una
+		 * tarjeta fantasma que no será almacenada
+		 */
+		if (!trainerForm.isCheck2()) {
+			trainerForm.setHolderName("VISA");
+			trainerForm.setBrandName("Usuario Fantasma");
+			trainerForm.setCVV(451);
+			trainerForm.setNumber("4556464860159704");
+			trainerForm.setExpirationMonth(02);
+		}
+
+		this.validator.validate(trainerForm, binding);
+
+		/*
+		 * Eliminamos la tarjeta fantasma para mostrar el formulario correctamente
+		 */
+		if (!trainerForm.isCheck2()) {
+			trainerForm.setHolderName(null);
+			trainerForm.setBrandName(null);
+			trainerForm.setCVV(0);
+			trainerForm.setNumber(null);
+			trainerForm.setExpirationMonth(0);
+		}
+
+		return trainer;
+	}
+}

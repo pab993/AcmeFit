@@ -1,0 +1,74 @@
+
+package domain;
+
+import java.util.Collection;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.validation.Valid;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
+
+@Entity
+@Access(AccessType.PROPERTY)
+public class PersonalTraining extends Exercise {
+
+	//Attributes
+	// =======================================================
+
+	private Double	cost;
+
+
+	@Min(1)
+	@Digits(fraction = 2, integer = 12)
+	public Double getCost() {
+		return this.cost;
+	}
+
+	public void setCost(final Double cost) {
+		this.cost = cost;
+	}
+
+
+	//Relationships
+	// ============================================================
+
+	private Report						report;
+	private Collection<RequestTraining>	requestsTraining;
+	private Trainer						trainer;
+
+
+	@Valid
+	@OneToOne(optional = true, cascade = CascadeType.ALL)
+	public Report getReport() {
+		return this.report;
+	}
+
+	public void setReport(final Report report) {
+		this.report = report;
+	}
+
+	@OneToMany(mappedBy = "personalTraining")
+	public Collection<RequestTraining> getRequestsTraining() {
+		return this.requestsTraining;
+	}
+
+	public void setRequestsTraining(final Collection<RequestTraining> requestsTraining) {
+		this.requestsTraining = requestsTraining;
+	}
+
+	@ManyToOne(optional = false)
+	public Trainer getTrainer() {
+		return this.trainer;
+	}
+
+	public void setTrainer(final Trainer trainer) {
+		this.trainer = trainer;
+	}
+
+}

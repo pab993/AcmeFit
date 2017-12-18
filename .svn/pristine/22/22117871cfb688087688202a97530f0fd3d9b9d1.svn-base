@@ -1,0 +1,26 @@
+# messages_es.properties
+#
+# Copyright (C) 2017 Universidad de Sevilla
+# 
+# The use of this project is hereby constrained to the conditions of the 
+# TDG Licence, a copy of which you may download from 
+# http://www.tdg-seville.info/License.html
+
+booking.moment 					= Momento de reserva 
+booking.status 					= Estado 
+booking.withPenalty 			= Con penalización
+
+booking.book					= Reservar
+booking.save					= Guardar
+booking.cancel					= Cancelar
+booking.back					= Volver
+booking.cancelBooking.confirm	= ¿Está seguro que desea cancelar esta reserva?
+booking.cancelBooking			= Cancelar reserva
+
+booking.commit.error			= No se pudo realizar esta operación
+booking.commit.ok				= Operación realizada con éxito
+
+booking.creditCard.noValid		= Debe tener registrada una tarjeta de crédito válida
+
+booking.yes						= Sí
+booking.no						= No

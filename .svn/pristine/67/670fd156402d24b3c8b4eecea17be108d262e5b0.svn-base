@@ -1,0 +1,34 @@
+# messages_es.properties
+#
+# Copyright (C) 2017 Universidad de Sevilla
+# 
+# The use of this project is hereby constrained to the conditions of the 
+# TDG Licence, a copy of which you may download from 
+# http://www.tdg-seville.info/License.html
+
+searchForm.keyword			= Introduzca un criterio de búsqueda
+searchForm.search			= Buscar
+
+activity.nameRoom			= Nombre de la sala
+activity.nameActivity		= Nombre de la actividad
+activity.description		= Descripción
+activity.duration			= Duración (Minuto/s)
+activity.intensity			= Intensidad
+activity.schedule			= Fecha
+activity.currentAttendance	= Nº de personas inscritas
+activity.maximumAttendance	= Capacidad máxima
+
+assessment.title 			= Título
+assessment.text 			= Contenido
+assessment.stars 			= Valoración
+assessment.actorName 		= Nombre
+
+postAssessment 				= Publicar evaluación
+
+display.actor 				= Ver perfil
+
+activity.trainer.display	= Mostrar perfil del entrenador
+activity.display			= Mostrar actividad
+activity.cancel				= Volver
+
+searchForm.commit.error		= No se pudo realizar esta operación

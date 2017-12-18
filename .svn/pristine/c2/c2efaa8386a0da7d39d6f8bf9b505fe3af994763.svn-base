@@ -1,0 +1,96 @@
+
+package domain;
+
+import java.util.Collection;
+import java.util.Date;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.SafeHtml;
+import org.springframework.format.annotation.DateTimeFormat;
+
+@Entity
+@Access(AccessType.PROPERTY)
+public class Competition extends Comentable {
+
+	//Attributes
+	//===========================================================
+
+	private Double	prize;
+	private String	description;
+	private String	rules;
+	private Date	startDate;
+	private Date	closingDate;
+
+
+	@Min(0)
+	@Digits(fraction = 2, integer = 12)
+	public Double getPrize() {
+		return this.prize;
+	}
+	public void setPrize(final Double prize) {
+		this.prize = prize;
+	}
+
+	@SafeHtml
+	@NotBlank
+	public String getDescription() {
+		return this.description;
+	}
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	@SafeHtml
+	@NotBlank
+	public String getRules() {
+		return this.rules;
+	}
+	public void setRules(final String rules) {
+		this.rules = rules;
+	}
+
+	@NotNull
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
+	public Date getStartDate() {
+		return this.startDate;
+	}
+	public void setStartDate(final Date startDate) {
+		this.startDate = startDate;
+	}
+
+	@NotNull
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
+	public Date getClosingDate() {
+		return this.closingDate;
+	}
+	public void setClosingDate(final Date closingDate) {
+		this.closingDate = closingDate;
+	}
+
+
+	//Relationship
+	// =============================================================
+
+	private Collection<Qualification>	qualifications;
+
+
+	@OneToMany(mappedBy = "competition")
+	public Collection<Qualification> getQualifications() {
+		return this.qualifications;
+	}
+	public void setQualifications(final Collection<Qualification> qualifications) {
+		this.qualifications = qualifications;
+	}
+}

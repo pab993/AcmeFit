@@ -1,0 +1,172 @@
+
+package services;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
+
+import repositories.BookingRepository;
+import domain.AdditionalService;
+import domain.Booking;
+import domain.Customer;
+
+@Transactional
+@Service
+public class BookingService {
+
+	// Managed Repository 
+	// ====================================================================================
+
+	@Autowired
+	private BookingRepository	bookingRepository;
+
+	//Services
+	// ======================================================================
+
+	@Autowired
+	private Validator			validator;
+
+	@Autowired
+	private CustomerService		customerService;
+
+
+	// Constructor methods
+	// ====================================================================================
+
+	public BookingService() {
+		super();
+	}
+
+	// Simple CRUDS methods 
+	// ====================================================================================
+
+	public Booking create(AdditionalService service) {
+		Customer customer;
+		Booking booking;
+
+		Assert.notNull(service);
+		customer = this.customerService.findByPrincipal();
+		Assert.notNull(customer);
+
+		booking = new Booking();
+		booking.setCustomer(customer);
+		booking.setService(service);
+		booking.setWithPenalty(false);
+		booking.setStatus("CONFIRMED");
+		booking.setMoment(new Date(System.currentTimeMillis() + 6));
+
+		return booking;
+	}
+
+	public Booking findOne(int id) {
+		Booking booking;
+
+		Assert.notNull(id);
+		booking = this.bookingRepository.findOne(id);
+		Assert.notNull(booking);
+
+		return booking;
+	}
+
+	private Booking save(Booking booking) {
+		Booking bookingSaved;
+
+		Assert.notNull(booking);
+		Assert.notNull(this.customerService.findByPrincipal());
+		Assert.isTrue(booking.getCustomer().equals(this.customerService.findByPrincipal()));
+
+		bookingSaved = this.bookingRepository.save(booking);
+		Assert.notNull(bookingSaved);
+
+		return bookingSaved;
+	}
+
+	public Booking book(Booking booking) throws ParseException {
+		Booking bookingSaved;
+		Date startMoment;
+		Date endMoment;
+		DateFormat timeFormat;
+
+		timeFormat = new SimpleDateFormat("HH:mm:ss");
+		startMoment = timeFormat.parse(booking.getMoment().getHours() + ":" + booking.getMoment().getMinutes() + ":01");
+		endMoment = new Date((startMoment.getTime() - 1000) + (booking.getService().getDuration() * 60 * 1000));
+
+		Assert.isTrue(booking.getService().getOpeningTime().before(startMoment) && booking.getService().getClosingTime().after(endMoment));
+		Assert.isTrue(this.capacityAvailable(booking));
+		bookingSaved = this.save(booking);
+		Assert.notNull(bookingSaved);
+
+		return bookingSaved;
+	}
+
+	private boolean capacityAvailable(Booking booking) {
+		boolean available;
+		Collection<Booking> bookings;
+		Date startMoment;
+		Date endMoment;
+
+		startMoment = new Date(booking.getMoment().getTime() - (booking.getService().getDuration() * 60 * 1000));
+		endMoment = new Date(booking.getMoment().getTime() + (booking.getService().getDuration() * 60 * 1000));
+
+		bookings = this.bookingRepository.findAllConfirmedBetweenMomentsByService(startMoment, endMoment, booking.getService().getId());
+		Assert.notNull(bookings);
+		available = bookings.size() < booking.getService().getMaximumCapacity();
+
+		return available;
+	}
+
+	public Booking cancel(int bookingId) {
+		Booking booking;
+		Booking bookingSaved;
+		Date now;
+
+		Assert.notNull(bookingId);
+		booking = this.findOne(bookingId);
+		Assert.notNull(this.customerService.findByPrincipal());
+		Assert.isTrue(booking.getCustomer().equals(booking.getCustomer()));
+		now = new Date(System.currentTimeMillis());
+
+		booking.setStatus("CANCELED");
+		bookingSaved = this.save(booking);
+
+		return bookingSaved;
+	}
+
+	public Collection<Booking> findAllConfirmedByService(AdditionalService service) {
+		Collection<Booking> bookings;
+
+		bookings = this.bookingRepository.findAllConfirmedByService(service.getId());
+		Assert.notNull(bookings);
+
+		return bookings;
+	}
+
+	// Others bussines methods
+	// ====================================================================================
+
+	public Booking reconstruct(Booking booking, BindingResult binding) {
+		Booking bookingReconstructed;
+
+		if (booking.getId() == 0)
+			bookingReconstructed = this.create(booking.getService());
+		else
+			bookingReconstructed = this.findOne(booking.getId());
+
+		bookingReconstructed.setMoment(booking.getMoment());
+
+		this.validator.validate(bookingReconstructed, binding);
+		Assert.isTrue(!binding.hasErrors());
+
+		return bookingReconstructed;
+	}
+}

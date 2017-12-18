@@ -1,0 +1,135 @@
+
+package services;
+
+import javax.transaction.Transactional;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import utilities.AbstractTest;
+import domain.Assessment;
+import domain.Comentable;
+
+@ContextConfiguration(locations = {
+	"classpath:spring/junit.xml"
+})
+@RunWith(SpringJUnit4ClassRunner.class)
+@Transactional
+public class AssessmentServiceTest extends AbstractTest {
+
+	// The SUT
+	// ====================================================
+
+	@Autowired
+	private AssessmentService	assessmentService;
+
+	@Autowired
+	private ComentableService	comentableService;
+
+
+	// Tests
+	// ====================================================
+
+	/*
+	 * Evaluate the activities, personal trainings and/or diets, as well as the different actors in the system (admin not incluyed).
+	 * 
+	 * En este caso de uso se crean y se guardan los assessments que queramos realizar sobre un objeto comentable siempre y cuando
+	 * nos encontramos autentificados, por lo tanto es accesible para cualquier 'actor'.
+	 * Para provocar el error, se intenta guardar mediante un usuario no autentificado e incluyendo un objeto comentable no válido.
+	 */
+
+	protected void createTest(String username, int idComentable, Class<?> expected) {
+		// TODO Auto-generated method stub
+		Class<?> caught;
+
+		caught = null;
+		try {
+
+			authenticate(username);
+			Comentable comentable = comentableService.findOneAux(idComentable);
+			assessmentService.create(comentable);
+			unauthenticate();
+
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		}
+		checkExceptions(expected, caught);
+
+	}
+
+	protected void saveTest(String username, int idComentable, Class<?> expected) {
+		Class<?> caught;
+
+		caught = null;
+		try {
+
+			authenticate(username);
+			Comentable comentable = comentableService.findOneAux(idComentable);
+			Assessment assessment = assessmentService.create(comentable);
+			assessment.setText("test");
+			assessment.setTitle("test");
+			assessment.setStars(2);
+
+			assessmentService.save(assessment);
+
+			unauthenticate();
+
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		}
+
+		checkExceptions(expected, caught);
+	}
+
+	// Drivers
+	// ====================================================
+
+	@Test
+	public void driverCreateAssessment() {
+
+		Object testingData1[][] = {
+			// Creación de un assessment si estoy autentificado como customer -> true
+			{
+				"customer1", 156, null
+			},
+			// Creación de un assessment si estoy autentificado como trainer -> true
+			{
+				"trainer1", 145, null
+			},
+			// Creación de un assessment si no estoy autentificado -> false
+			{
+				null, 156, IllegalArgumentException.class
+			}
+		};
+
+		for (int i = 0; i < testingData1.length; i++) {
+			createTest((String) testingData1[i][0], (int) testingData1[i][1], (Class<?>) testingData1[i][2]);
+		}
+	}
+
+	@Test
+	public void driverSaveAssessment() {
+
+		Object testingData[][] = {
+			// Si existe el idComentable -> true
+			{
+				"customer1", 156, null
+			},
+			// Si no estamos autentificados para guardar un assessment -> false
+			{
+				null, 156, IllegalArgumentException.class
+			}, {
+				// Si no estamos autentificados para guardar un assessment y el idComentable no existe -> false
+				null, 989, IllegalArgumentException.class
+			}
+		};
+
+		for (int i = 0; i < testingData.length; i++) {
+			saveTest((String) testingData[i][0], (int) testingData[i][1], (Class<?>) testingData[i][2]);
+		}
+	}
+
+}

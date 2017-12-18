@@ -1,0 +1,27 @@
+# messages.properties
+#
+# Copyright (C) 2017 Universidad de Sevilla
+# 
+# The use of this project is hereby constrained to the conditions of the 
+# TDG Licence, a copy of which you may download from 
+# http://www.tdg-seville.info/License.html
+
+trainer.name				= Name
+trainer.surname				= Surname
+trainer.email				= Email
+trainer.phone				= Phone
+trainer.address				= Address
+trainer.picture				= Picture
+
+assessment.title 			= Title
+assessment.text 			= Text
+assessment.stars 			= Stars
+assessment.actorName 		= Name
+
+postAssessment 				= Post assessment
+
+display.actor 				= View profile
+activity.cancel				= Back
+requestTrainer 				= Request trainer
+principalNoValido 			= You can not do this because you do not have a valid credit card or have outstanding invoices
+searchForm.commit.error		= Cannot commit this operation

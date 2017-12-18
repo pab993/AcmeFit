@@ -1,0 +1,90 @@
+
+package services;
+
+import java.util.Collection;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import repositories.NutritionistRepository;
+import security.LoginService;
+import security.UserAccount;
+import domain.Nutritionist;
+
+@Transactional
+@Service
+public class NutritionistService {
+
+	// Managed Repository 
+	// ====================================================================================
+
+	@Autowired
+	private NutritionistRepository	nutritionistRepository;
+
+
+	// Constructor methods
+	// ====================================================================================
+
+	public NutritionistService() {
+		super();
+	}
+
+	// Simple CRUDS methods 
+	// ====================================================================================
+
+	public Nutritionist findOne(final int id) {
+
+		Assert.isTrue(this.nutritionistRepository.exists(id));
+
+		Nutritionist nutritionist = this.nutritionistRepository.findOne(id);
+		Assert.notNull(nutritionist);
+
+		return nutritionist;
+	}
+
+	public Collection<Nutritionist> findAll() {
+
+		Collection<Nutritionist> nutritionists;
+
+		nutritionists = this.nutritionistRepository.findAll();
+		Assert.notEmpty(nutritionists);
+
+		return nutritionists;
+	}
+
+	public Nutritionist save(final Nutritionist nutritionist) {
+		Assert.notNull(nutritionist);
+
+		final Nutritionist saved = this.nutritionistRepository.save(nutritionist);
+
+		return saved;
+	}
+
+	public void delete(final Nutritionist nutritionist) {
+		Assert.notNull(nutritionist, "Trainer null");
+		Assert.isTrue(this.nutritionistRepository.exists(nutritionist.getId()), "didn't found");
+
+		this.nutritionistRepository.delete(nutritionist);
+	}
+
+	// Others bussines methods
+	// ====================================================================================
+
+	public Nutritionist findByPrincipal() {
+		Nutritionist result;
+
+		try {
+			final UserAccount userAccount = LoginService.getPrincipal();
+			result = this.nutritionistRepository.findByUserAccountId(userAccount.getId());
+
+		} catch (final Throwable exc) {
+			result = null;
+
+		}
+		return result;
+	}
+
+}

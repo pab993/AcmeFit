@@ -1,0 +1,116 @@
+
+package services;
+
+import java.util.Collection;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import repositories.PersonalTrainingRepository;
+import security.LoginService;
+import security.UserAccount;
+import domain.PersonalTraining;
+import domain.Trainer;
+
+@Transactional
+@Service
+public class PersonalTrainingService {
+
+	//Repository
+	//======================================================================
+
+	@Autowired
+	private PersonalTrainingRepository	personalTrainingRepository;
+
+	//Services
+	// ======================================================================
+
+	@Autowired
+	private TrainerService				trainerService;
+
+
+	//CRUD methods
+	//=======================================================================
+
+	public PersonalTraining findOne(final int id) {
+		PersonalTraining personalTraining;
+
+		personalTraining = this.personalTrainingRepository.findOne(id);
+		Assert.notNull(personalTraining);
+
+		return personalTraining;
+	}
+
+	public PersonalTraining create() {
+		final PersonalTraining personalTraining = new PersonalTraining();
+		Assert.isInstanceOf(Trainer.class, this.trainerService.findByPrincipal());
+
+		final Trainer trainer = this.trainerService.findByPrincipal();
+		personalTraining.setTrainer(trainer);
+
+		return personalTraining;
+	}
+
+	public PersonalTraining save(final PersonalTraining personalTraining) {
+		Assert.notNull(personalTraining);
+		Assert.isInstanceOf(Trainer.class, this.trainerService.findByPrincipal());
+
+		final PersonalTraining personalTrainingRes = this.personalTrainingRepository.save(personalTraining);
+
+		return personalTrainingRes;
+	}
+
+	public void delete(final PersonalTraining personalTraining) {
+
+		Assert.notNull(personalTraining);
+		this.checkPrincipal(personalTraining);
+
+		this.save(personalTraining);
+
+		this.personalTrainingRepository.delete(personalTraining);
+	}
+
+	public Collection<PersonalTraining> findAll() {
+
+		Collection<PersonalTraining> personalTrainings;
+
+		personalTrainings = this.personalTrainingRepository.findAll();
+		Assert.notNull(personalTrainings);
+
+		return personalTrainings;
+	}
+
+	//Other bussiness methods
+	// ==================================================================
+
+	private void checkPrincipal(final PersonalTraining personalTraining) {
+		// comprueba qe el personalTraining pertence al usuario
+		final Trainer trainer = this.trainerService.findByPrincipal();
+		Assert.isTrue(personalTraining.getTrainer().equals(trainer));
+	}
+
+	public PersonalTraining findByUserAccount() {
+		PersonalTraining personalTraining;
+		final UserAccount userAccount = LoginService.getPrincipal();
+		personalTraining = this.personalTrainingRepository.findByUserAccount(userAccount.getId());
+
+		return personalTraining;
+	}
+
+	public Collection<PersonalTraining> findByTrainerId(final int trainerId) {
+		Collection<PersonalTraining> personalTraining;
+
+		personalTraining = this.personalTrainingRepository.findByTrainerId(trainerId);
+
+		return personalTraining;
+	}
+	
+	public Double avgPersonalTrainingForCustomer(){
+		Double res = this.personalTrainingRepository.avgPersonalTrainingForCUstomer();
+		
+		return res;
+	}
+}

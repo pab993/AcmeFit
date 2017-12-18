@@ -1,0 +1,136 @@
+
+package services;
+
+import java.util.ArrayList;
+
+import javax.transaction.Transactional;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import utilities.AbstractTest;
+import domain.Assessment;
+import domain.Diet;
+import domain.Nutritionist;
+
+@ContextConfiguration(locations = {
+	"classpath:spring/junit.xml"
+})
+@RunWith(SpringJUnit4ClassRunner.class)
+@Transactional
+public class NutritionistServiceTest extends AbstractTest {
+
+	// The SUT
+	// ====================================================
+
+	@Autowired
+	private NutritionistService	nutritionistService;
+
+
+	// Tests
+	// ====================================================
+
+	/*
+	 * Register a nutritionist to the system.
+	 * 
+	 * En este caso de uso se registran nuevos nutricionistas personales en el sistema, siendo accesible unicamente por los administradores.
+	 * Para provocar el error, introduciremos atributos que no cumplen con las restricciones y/o atributos no válidos.
+	 */
+
+	public void registerTest(String username, Nutritionist nutritionist, Class<?> expected) {
+		Class<?> caught;
+
+		caught = null;
+		try {
+
+			this.authenticate(username);
+			this.nutritionistService.save(nutritionist);
+			this.unauthenticate();
+
+		} catch (Throwable oops) {
+
+			caught = oops.getClass();
+		}
+		this.checkExceptions(expected, caught);
+	}
+
+	// Drivers
+	// ====================================================
+
+	@Test
+	public void driverRegister() {
+
+		Nutritionist nutritionist1 = this.nutritionistService.create();
+		Nutritionist nutritionist2 = this.nutritionistService.create();
+		Nutritionist nutritionist3 = this.nutritionistService.create();
+
+		nutritionist1.setName("test");
+		nutritionist1.setSurname("test");
+		nutritionist1.setPhone("(+34)647382899");
+		nutritionist1.setPicture("http://wwww.picture2.com");
+		nutritionist1.setAddress("addressTest");
+		nutritionist1.setEmail("nutri1@hotmail.com");
+		nutritionist1.setAssessments(new ArrayList<Assessment>());
+		nutritionist1.setDiets(new ArrayList<Diet>());
+		nutritionist1.setFee(0.0);
+		nutritionist1.setSendAssessments(new ArrayList<Assessment>());
+		nutritionist1.setIdEmployee("aaa-77483");
+
+		nutritionist1.getUserAccount().setUsername("nutri1Test");
+		nutritionist1.getUserAccount().setPassword(new Md5PasswordEncoder().encodePassword("nutri1Test", null));
+
+		// OTRO NUTRITIONIST
+		// ============================
+
+		nutritionist2.setName("test2");
+		nutritionist2.setSurname("test2");
+		nutritionist2.setPhone("(+34)647382899");
+		nutritionist2.setPicture("http://wwww.picture2.com");
+		nutritionist2.setAddress("addressTest2");
+		nutritionist2.setEmail("nutri2@hotmail.com");
+		nutritionist2.setAssessments(new ArrayList<Assessment>());
+		nutritionist2.setDiets(new ArrayList<Diet>());
+		nutritionist2.setFee(0.0);
+		nutritionist2.setSendAssessments(new ArrayList<Assessment>());
+		nutritionist2.setIdEmployee("aab-71483");
+
+		nutritionist2.getUserAccount().setUsername("nutri2Test");
+		nutritionist2.getUserAccount().setPassword(new Md5PasswordEncoder().encodePassword("nutri2Test", null));
+
+		// OTRO NUTRITIONIST
+		// ============================
+
+		//		nutritionist3.setName("test3");
+		//		nutritionist3.setSurname("test3");
+		//		nutritionist3.setPhone("(+34)647181899");
+		//		nutritionist3.setPicture("http://wwww.picture2.com");
+		//		nutritionist3.setAddress("addressTest3");
+		//		nutritionist3.setEmail("nutri3@hotmail.com");
+		//		nutritionist3.setAssessments(new ArrayList<Assessment>());
+		//		nutritionist3.setDiets(new ArrayList<Diet>());
+		//		nutritionist3.setFee(0.0);
+		//		nutritionist3.setSendAssessments(new ArrayList<Assessment>());
+		//		nutritionist3.setIdEmployee("aac-71453");
+		//
+		//		nutritionist3.getUserAccount().setUsername("nutri3Test");
+		//		nutritionist3.getUserAccount().setPassword(new Md5PasswordEncoder().encodePassword("nutri3Test", null));
+
+		Object testingData[][] = {
+			{
+				"admin", nutritionist1, null
+			}
+
+		};
+
+		for (int i = 0; i < testingData.length; i++)
+			this.registerTest((String) testingData[i][0], (Nutritionist) testingData[i][1], (Class<?>) testingData[i][2]);
+
+		testingData = null;
+
+	}
+
+}

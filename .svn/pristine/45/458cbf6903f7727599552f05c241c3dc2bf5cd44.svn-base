@@ -1,0 +1,193 @@
+
+package services;
+
+import java.util.Collection;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
+
+import repositories.RequestTrainingRepository;
+import security.Authority;
+import security.LoginService;
+import security.UserAccount;
+import domain.Customer;
+import domain.RequestTraining;
+import domain.Trainer;
+import forms.RequestTrainingForm;
+
+@Transactional
+@Service
+public class RequestTrainingService {
+
+	//Repository
+	//======================================================================
+
+	@Autowired
+	private RequestTrainingRepository	requestTrainingRepository;
+
+	@Autowired
+	private CustomerService				customerService;
+
+	@Autowired
+	private TrainerService				trainerService;
+
+	@Autowired
+	private Validator					validator;
+
+
+	//Services
+	// ======================================================================
+
+	//CRUD methods
+	//=======================================================================
+
+	public RequestTraining findOne(final int id) {
+		RequestTraining requestTraining;
+
+		requestTraining = this.requestTrainingRepository.findOne(id);
+		Assert.notNull(requestTraining);
+
+		return requestTraining;
+	}
+
+	public Collection<RequestTraining> findAll() {
+
+		Collection<RequestTraining> requestTrainings;
+
+		requestTrainings = this.requestTrainingRepository.findAll();
+		Assert.notNull(requestTrainings);
+
+		return requestTrainings;
+	}
+
+	public RequestTraining save(RequestTraining requestTraining) {
+		Assert.notNull(requestTraining);
+		RequestTraining result;
+		Assert.isTrue(this.checkIfCustomer() || this.checkIfTrainer());
+		result = this.requestTrainingRepository.save(requestTraining);
+
+		return result;
+	}
+
+	public void delete(final RequestTraining requestTraining) {
+
+		Assert.notNull(requestTraining);
+		Assert.isTrue(this.checkIfCustomer() || this.checkIfTrainer());
+
+		this.requestTrainingRepository.delete(requestTraining);
+	}
+
+	//Other bussiness methods
+	// ==================================================================
+
+	public Collection<RequestTraining> findAllPendingByCustomer(Customer customer) {
+
+		Collection<RequestTraining> requestTrainings;
+
+		requestTrainings = this.requestTrainingRepository.findAllPendingByCustomer(customer.getId());
+
+		return requestTrainings;
+	}
+
+	public Collection<RequestTraining> findAllByCustomer(Customer customer) {
+
+		Collection<RequestTraining> requestTrainings;
+
+		requestTrainings = this.requestTrainingRepository.findAllByCustomer(customer.getId());
+
+		return requestTrainings;
+	}
+
+	public void cancelled(int requestTrainingId) {
+		Customer customer;
+		RequestTraining requestTraining;
+
+		customer = this.customerService.findByPrincipal();
+		requestTraining = this.findOne(requestTrainingId);
+
+		Assert.isInstanceOf(Customer.class, customer);
+
+		requestTraining.setStatus("DENIED");
+
+		this.requestTrainingRepository.save(requestTraining);
+	}
+
+	public RequestTraining findByCustomerAndPersonalTraining(int customerId, int personalTrainingId) {
+		RequestTraining requestTraining = this.requestTrainingRepository.findByCustomerAndPersonalTraining(customerId, personalTrainingId);
+		//		Assert.notNull(requestDiet);
+		return requestTraining;
+	}
+
+	public RequestTrainingForm reconstructForm(RequestTraining requestTraining) {
+		RequestTrainingForm res = new RequestTrainingForm();
+		res.setStatus(requestTraining.getStatus());
+		res.setRequestTrainingId(requestTraining.getId());
+		res.setPersonalTraining(requestTraining.getPersonalTraining());
+
+		return res;
+	}
+
+	public RequestTraining reconstruct(RequestTrainingForm requestTrainingForm, BindingResult binding) {
+		RequestTraining result;
+
+		result = new RequestTraining();
+		Customer customer = this.customerService.findByPrincipal();
+		result.setCustomer(customer);
+		result.setPersonalTraining(requestTrainingForm.getPersonalTraining());
+		result.setStatus("PENDING");
+
+		this.validator.validate(result, binding);
+
+		return result;
+
+	}
+
+	public Boolean checkIfCustomer() {
+		Boolean var = false;
+		UserAccount userAccount = LoginService.getPrincipal();
+		Authority au = new Authority();
+		au.setAuthority("CUSTOMER");
+		if (userAccount.getAuthorities().contains(au))
+			var = true;
+		return var;
+	}
+
+	public Boolean checkIfTrainer() {
+		Boolean var = false;
+		UserAccount userAccount = LoginService.getPrincipal();
+		Authority au = new Authority();
+		au.setAuthority("TRAINER");
+		if (userAccount.getAuthorities().contains(au))
+			var = true;
+		return var;
+	}
+
+	public Collection<RequestTraining> findAllByTrainer(int trainerId) {
+		Collection<RequestTraining> requestTrainings;
+
+		requestTrainings = this.requestTrainingRepository.findAllByTrainer(trainerId);
+		Assert.notNull(requestTrainings);
+
+		return requestTrainings;
+	}
+
+	public RequestTraining reconstructByTrainer(RequestTrainingForm requestTrainingForm, BindingResult binding) {
+		RequestTraining result;
+
+		result = this.requestTrainingRepository.findOne(requestTrainingForm.getRequestTrainingId());
+		Trainer trainer = this.trainerService.findByPrincipal();
+		Assert.isTrue(requestTrainingForm.getPersonalTraining().getTrainer().equals(trainer));
+		result.setStatus(requestTrainingForm.getStatus());
+
+		this.validator.validate(result, binding);
+
+		return result;
+
+	}
+
+}

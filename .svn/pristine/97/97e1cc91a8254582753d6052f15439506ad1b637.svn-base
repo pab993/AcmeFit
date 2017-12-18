@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- 
+ * tiles.xml
+ *
+ * Copyright (C) 2017 Universidad de Sevilla
+ * 
+ * The use of this project is hereby constrained to the conditions of the 
+ * TDG Licence, a copy of which you may download from 
+ * http://www.tdg-seville.info/License.html
+ -->
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+       
+<tiles-definitions>
+
+	<definition name="competition/search" extends="master.page">	
+		<put-attribute name="title" value="Search competitions" />
+		<put-attribute name="body" value="/views/competition/search.jsp" />
+	</definition>
+	
+	<definition name="competition/edit" extends="master.page">	
+		<put-attribute name="title" value="Edit competition" />
+		<put-attribute name="body" value="/views/competition/edit.jsp" />
+	</definition>
+
+	<definition name="competition/list" extends="master.page">	
+		<put-attribute name="title" value="List of competitions" />
+		<put-attribute name="body" value="/views/competition/list.jsp" />
+	</definition>
+
+	<definition name="activity/display" extends="master.page">	
+		<put-attribute name="title" value="Display activity" />
+		<put-attribute name="body" value="/views/activity/display.jsp" />
+	</definition>
+	
+</tiles-definitions>

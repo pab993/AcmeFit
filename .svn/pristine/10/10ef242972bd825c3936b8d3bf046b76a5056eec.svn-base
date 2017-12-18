@@ -1,0 +1,26 @@
+# messages.properties
+#
+# Copyright (C) 2017 Universidad de Sevilla
+# 
+# The use of this project is hereby constrained to the conditions of the 
+# TDG Licence, a copy of which you may download from 
+# http://www.tdg-seville.info/License.html
+
+diet.expirationMoment		= Expiration moment
+diet.estimateLostWeight		= Estimate lost weight
+diet.hints					= Some hints
+diet.meals					= Meals
+diet.application			= Make an application
+display.diet				= Display diet
+cancel						= Cancel
+
+assessment.title 			= Title
+assessment.text 			= Text
+assessment.stars 			= Stars
+assessment.actorName 		= Name
+
+postAssessment 				= Post assessment
+
+display.actor 				= View profile
+
+error.commit.request		= Cannot commit this operation

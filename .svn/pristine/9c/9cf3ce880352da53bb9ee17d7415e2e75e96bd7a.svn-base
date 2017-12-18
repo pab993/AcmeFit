@@ -1,0 +1,21 @@
+
+package repositories;
+
+import java.util.Collection;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import domain.PersonalTraining;
+
+@Repository
+public interface PersonalTrainingRepository extends JpaRepository<PersonalTraining, Integer> {
+
+	@Query("select pt from PersonalTraining pt where pt.trainer.userAccount.id = ?1")
+	PersonalTraining findByUserAccount(int userAccountId);
+
+	@Query("select pt from PersonalTraining pt where pt.trainer.id = ?1")
+	Collection<PersonalTraining> findByTrainerId(int trainerID);
+
+}

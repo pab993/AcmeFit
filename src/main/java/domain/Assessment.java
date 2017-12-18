@@ -1,0 +1,109 @@
+
+package domain;
+
+import java.util.Date;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.SafeHtml;
+import org.springframework.format.annotation.DateTimeFormat;
+
+@Entity
+@Access(AccessType.PROPERTY)
+public class Assessment extends DomainEntity {
+
+	//Attributes 
+	// =================================================================
+
+	private Date	createMoment;
+	private String	title;
+	private String	text;
+	private int		stars;
+
+
+	@Past
+	@NotNull
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
+	public Date getCreateMoment() {
+		return this.createMoment;
+	}
+
+	public void setCreateMoment(final Date createMoment) {
+		this.createMoment = createMoment;
+	}
+
+	@SafeHtml
+	@NotBlank
+	public String getTitle() {
+		return this.title;
+	}
+
+	public void setTitle(final String title) {
+		this.title = title;
+	}
+
+	@SafeHtml
+	@NotBlank
+	public String getText() {
+		return this.text;
+	}
+
+	public void setText(final String text) {
+		this.text = text;
+	}
+
+	@Range(min = 0, max = 5)
+	public int getStars() {
+		return this.stars;
+	}
+
+	public void setStars(final int stars) {
+		this.stars = stars;
+	}
+
+
+	//Relationships
+	// =================================================================
+
+	private Actor		actor;
+	private Comentable	comentable;
+
+
+	@Valid
+	@ManyToOne(optional = false)
+	public Actor getActor() {
+		return this.actor;
+	}
+
+	public void setActor(final Actor actor) {
+		this.actor = actor;
+	}
+
+	@Valid
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@NotFound(action = NotFoundAction.IGNORE)
+	@JoinColumn(name = "comentable_id")
+	public Comentable getComentable() {
+		return this.comentable;
+	}
+
+	public void setComentable(final Comentable comentable) {
+		this.comentable = comentable;
+	}
+
+}

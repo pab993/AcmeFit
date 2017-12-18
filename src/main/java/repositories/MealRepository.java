@@ -1,0 +1,21 @@
+
+package repositories;
+
+import java.util.Collection;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import domain.Meal;
+
+@Repository
+public interface MealRepository extends JpaRepository<Meal, Integer> {
+
+	@Query("select m from Meal m where m.diet.id = ?1")
+	Collection<Meal> findMealsByDiet(int dietId);
+
+	@Query("select m from Meal m join m.ingredients i where i.id = ?1")
+	Meal findMealByIngredient(int ingredientId);
+
+}

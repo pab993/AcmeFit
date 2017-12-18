@@ -1,0 +1,41 @@
+# messages.properties
+#
+# Copyright (C) 2017 Universidad de Sevilla
+# 
+# The use of this project is hereby constrained to the conditions of the 
+# TDG Licence, a copy of which you may download from 
+# http://www.tdg-seville.info/License.html
+
+message.application 			= You are about to apply for this diet, once you applied for it you must wait until the proper nutritionist approve it
+message.application.2			= You are about to delete this application for this diet.
+application						= Make an application
+application.save				= Save
+application.delete				= Delete application
+application.confirm.delete		= You are about to delete this apply for a diet, Are you sure do you want to delete it?
+application.cancel				= Cancel
+
+requestDiet.status				= Status
+requestDiet.expirationMoment	= Expiration moment
+requestDiet.estimateLostWeight	= Estimate lost weight
+requestDiet.cost				= Cost
+requestDiet.rewardsPoint		= Rewards point
+
+
+requestDiet.confirm.cancelled 	= ¿Are you sure that you wish to cancelled the request of diet?
+requestDiet.cancelled			= Cancelled request
+
+requestDiet.cancel				= Back
+application.cancel				= Cancel
+
+invalidCreditCard				= You cannot make a application because you have an invalid creditCard or maybe you have some unpaid bill.
+
+customer.name.application		= Applicant
+nutritionist.diet				= Diet
+request.status					= Status
+requestDiet.edit				= Edit
+cancel							= Cancel
+
+requestDiet.status.pending		= Pending
+requestDiet.status.accepted		= Accepted
+requestDiet.status.denied		= Denied
+

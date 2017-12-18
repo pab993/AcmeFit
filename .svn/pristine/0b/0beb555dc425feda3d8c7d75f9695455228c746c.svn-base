@@ -1,0 +1,92 @@
+
+package services;
+
+import javax.transaction.Transactional;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import utilities.AbstractTest;
+
+@ContextConfiguration(locations = {
+	"classpath:spring/junit.xml"
+})
+@RunWith(SpringJUnit4ClassRunner.class)
+@Transactional
+public class RequestDietServiceTest extends AbstractTest {
+
+	// The SUT
+	// ====================================================
+
+	@Autowired
+	private RequestDietService	requestDietService;
+
+	@Autowired
+	private CustomerService		customerService;
+
+
+	// Tests
+	// ====================================================
+
+	/*
+	 * Cancel his or her request. A request can be cancelled if the status is PENDING.
+	 * 
+	 * En este caso de uso se cancelan las peticiones de dietas registradas en el sistema, perteneciendo estas peticiones al customer registrado en ese momento. Por lo tanto, tan sólo es accesible para los customers.
+	 * Para provocar el error, introduciremos actores que no tienen permiso para realizar dicha cancelación, así como actores y peticiones de dietas cuyos Ids no existen.
+	 */
+
+	protected void cancelRequestDietTest(String username, int requestDietId, Class<?> expected) {
+		Class<?> caught;
+
+		caught = null;
+		try {
+
+			authenticate(username);
+			requestDietService.cancelled(requestDietId);
+			unauthenticate();
+
+		} catch (Throwable oops) {
+			caught = oops.getClass();
+		}
+		checkExceptions(expected, caught);
+
+	}
+
+	// Drivers
+	// ====================================================
+
+	@Test
+	public void driverCancelRequestDiet() {
+
+		Object testingData1[][] = {
+			// Cancelación de una petición de dieta si estoy autentificado como customer -> true
+			{
+				"customer1", 130, null
+			},
+			// Cancelación de una petición de dieta si estoy autentificado como trainer cuya petición no existe-> false		
+			{
+				"trainer1", 140, IllegalArgumentException.class
+			},
+			// Cancelación de una petición de dieta si estoy autentificado como nutritionist -> false		
+			{
+				"nutritionist1", 130, IllegalArgumentException.class
+			},
+			// Cancelación de una petición de dieta si estoy autentificado como un nutritionist que no existe -> false				
+			{
+				"nutritionist22", 130, IllegalArgumentException.class
+			},
+			// Cancelación de una petición de dieta si no estoy autentificado  -> true				
+			{
+				null, 130, IllegalArgumentException.class
+			}
+		};
+
+		for (int i = 0; i < testingData1.length; i++) {
+			cancelRequestDietTest((String) testingData1[i][0], (int) testingData1[i][1], (Class<?>) testingData1[i][2]);
+		}
+	}
+
+}

@@ -1,0 +1,27 @@
+# messages.properties
+#
+# Copyright (C) 2017 Universidad de Sevilla
+# 
+# The use of this project is hereby constrained to the conditions of the 
+# TDG Licence, a copy of which you may download from 
+# http://www.tdg-seville.info/License.html
+
+requestTraining.status			= Status
+requestTraining.nameActivity	= Activity's name
+requestTraining.intensity		= Intensity
+requestTraining.cost			= Cost
+
+requestTraining.cancel			= Back
+
+requestTraining.status.pending		= Pending
+requestTraining.status.accepted		= Accepted
+requestTraining.status.denied		= Denied
+applicationTraining.save			= Make an application
+applicationTraining.delete			= Delete application
+applicationTraining.confirm.delete  = You are about to delete this apply for a personal training, Are you sure do you want to delete it?
+applicationTraining.cancel			= Cancelar
+
+invalidCreditCard				= You cannot make a application because you have an invalid creditCard or maybe you have some unpaid bill.
+
+message.application.pt			= You are about to apply for this personal training, once you applied for it you must wait until the proper trainer approve it
+message.application.pt2			= You are about to delete this application for this personal training.

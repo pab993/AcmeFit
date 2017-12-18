@@ -1,0 +1,34 @@
+
+package forms;
+
+import javax.validation.constraints.NotNull;
+
+import domain.Diet;
+
+public class RequestDietForm {
+
+	//Attributes
+	// =======================================================
+
+	private int		requestDietId;
+	private Diet	diet;
+
+
+	@NotNull
+	public int getRequestDietId() {
+		return this.requestDietId;
+	}
+
+	public void setRequestDietId(int requestDietId) {
+		this.requestDietId = requestDietId;
+	}
+
+	public Diet getDiet() {
+		return this.diet;
+	}
+
+	public void setDiet(Diet diet) {
+		this.diet = diet;
+	}
+
+}

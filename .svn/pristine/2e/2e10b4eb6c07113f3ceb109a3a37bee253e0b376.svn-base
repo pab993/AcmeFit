@@ -1,0 +1,94 @@
+
+package services;
+
+import java.util.Collection;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import repositories.CustomerRepository;
+import security.LoginService;
+import security.UserAccount;
+import domain.Customer;
+
+@Transactional
+@Service
+public class CustomerService {
+
+	// Managed Repository 
+	// ====================================================================================
+
+	@Autowired
+	private CustomerRepository	customerRepository;
+
+
+	// Constructor methods
+	// ====================================================================================
+
+	public CustomerService() {
+		super();
+	}
+
+	// Simple CRUDS methods 
+	// ====================================================================================
+
+	public Customer findOne(final int id) {
+
+		Assert.isTrue(this.customerRepository.exists(id));
+
+		return this.customerRepository.findOne(id);
+	}
+
+	public Collection<Customer> findAll() {
+
+		Collection<Customer> customers;
+
+		customers = this.customerRepository.findAll();
+		Assert.notEmpty(customers);
+
+		return customers;
+	}
+
+	public Customer save(final Customer customer) {
+		Assert.notNull(customer);
+
+		final Customer saved = this.customerRepository.save(customer);
+
+		return saved;
+	}
+
+	public void delete(final Customer customer) {
+		Assert.notNull(customer, "Customer null");
+		Assert.isTrue(this.customerRepository.exists(customer.getId()), "didn't found");
+
+		this.customerRepository.delete(customer);
+	}
+
+	// Others bussines methods
+	// ====================================================================================
+
+	public Customer findByPrincipal() {
+		Customer result;
+
+		try {
+			final UserAccount userAccount = LoginService.getPrincipal();
+			result = this.customerRepository.findByUserAccountId(userAccount.getId());
+
+		} catch (final Throwable exc) {
+			result = null;
+
+		}
+		return result;
+	}
+
+	public Customer findByUserAccount(final UserAccount userAccount) {
+		Customer result;
+
+		result = this.customerRepository.findByUserAccountId(userAccount.getId());
+
+		return result;
+	}
+}
